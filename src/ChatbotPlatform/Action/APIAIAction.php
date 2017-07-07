@@ -14,6 +14,10 @@ class APIAIAction implements MessageActionInterface
 
     public function onMessage(MessageEvent $event): void
     {
+        if ($event->hasReply()) {
+            return;
+        }
+
         $message = $event->getMessage();
         if (!$message instanceof SimpleMessage) {
             return;

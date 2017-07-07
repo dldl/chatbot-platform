@@ -10,12 +10,12 @@ class DumbMessageAction implements MessageActionInterface
 {
     public function onMessage(MessageEvent $event): void
     {
-        $message = $event->getMessage();
-        if (!$message instanceof SimpleMessage) {
+        if ($event->hasReply()) {
             return;
         }
 
-        if ($event->hasReply()) {
+        $message = $event->getMessage();
+        if (!$message instanceof SimpleMessage) {
             return;
         }
 
