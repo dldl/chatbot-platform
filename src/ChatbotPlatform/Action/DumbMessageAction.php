@@ -29,7 +29,7 @@ class DumbMessageAction implements MessageActionInterface
           $message->getRecipient(),
           $message->getSender(),
           $message->getMessenger(),
-          '[dumb] You said "'.$message->getMessage().'"'
+          '[dumb] You wrote "'.$message->getMessage().'"'
         );
 
         return $response;
