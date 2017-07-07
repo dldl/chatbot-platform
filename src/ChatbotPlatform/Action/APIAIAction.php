@@ -62,7 +62,7 @@ class APIAIAction implements MessageActionInterface
         return [
             'query' => $message->getMessage(),
             'lang' => 'fr',
-            'sessionId' => 'coucou',
+            'sessionId' => $message->getSender(),
         ];
     }
 }
