@@ -15,6 +15,7 @@ use pimax\FbBotApp;
 use pimax\Messages\Message as FacebookMessage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class FacebookMessageHandler implements MessageHandlerInterface
 {
@@ -29,6 +30,16 @@ class FacebookMessageHandler implements MessageHandlerInterface
     {
         $request = $event->getRequest();
 
+        if ($request->getContentType() !== 'json') {
+            return;
+        }
+
+        if ($this->isChallenge($request)) {
+            $event->setResponse(new Response($request->getContent()['hub.verify_token']));
+
+            return;
+        }
+
         try {
             $message = $this->handleRequest($request);
             $event->setMessage($message);
@@ -39,7 +50,7 @@ class FacebookMessageHandler implements MessageHandlerInterface
     {
         $reply = $event->getReply();
 
-        if ($reply->getMessenger() !== ChatbotMessengers::FACEBOOK || !$reply instanceof SimpleMessage) {
+        if (!$reply instanceof SimpleMessage || $reply->getMessenger() !== ChatbotMessengers::FACEBOOK) {
             return;
         }
 
@@ -47,12 +58,15 @@ class FacebookMessageHandler implements MessageHandlerInterface
         $event->setResponse($rawReply);
     }
 
+    private function isChallenge(Request $request): bool
+    {
+        $content = $request->getContent();
+
+        return isset($content['hub.challenge']) && isset($content['hub.verify_token']);
+    }
+
     private function handleRequest(Request $request): AbstractMessage
     {
-        if ($request->getContentType() !== 'json') {
-            throw new MessageParsingException('Only json is supported');
-        }
-
         $rawMessage = json_decode($request->getContent(), true);
 
         if (!isset($rawMessage['entry']) || !isset($rawMessage['entry'][0]['messaging'])) {
