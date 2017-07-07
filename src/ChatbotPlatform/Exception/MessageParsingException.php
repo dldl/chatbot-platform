@@ -1,6 +1,6 @@
 <?php
 
-namespace ChatbotPlatform\Exception;
+namespace dLdL\ChatbotPlatform\Exception;
 
 class MessageParsingException extends \Exception
 {

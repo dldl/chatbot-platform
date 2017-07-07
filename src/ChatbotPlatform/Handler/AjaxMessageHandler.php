@@ -1,14 +1,14 @@
 <?php
 
-namespace ChatbotPlatform\Handler;
+namespace dLdL\ChatbotPlatform\Handler;
 
-use ChatbotPlatform\ChatbotMessengers;
-use ChatbotPlatform\Event\RequestEvent;
-use ChatbotPlatform\Event\ReplyEvent;
-use ChatbotPlatform\Exception\MessageParsingException;
-use ChatbotPlatform\Message\AbstractMessage;
-use ChatbotPlatform\Message\SimpleMessage;
-use ChatbotPlatform\MessageHandlerInterface;
+use dLdL\ChatbotPlatform\ChatbotMessengers;
+use dLdL\ChatbotPlatform\Event\RequestEvent;
+use dLdL\ChatbotPlatform\Event\ReplyEvent;
+use dLdL\ChatbotPlatform\Exception\MessageParsingException;
+use dLdL\ChatbotPlatform\Message\AbstractMessage;
+use dLdL\ChatbotPlatform\Message\SimpleMessage;
+use dLdL\ChatbotPlatform\MessageHandlerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 

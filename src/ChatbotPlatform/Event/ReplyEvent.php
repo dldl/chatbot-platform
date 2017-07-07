@@ -1,8 +1,8 @@
 <?php
 
-namespace ChatbotPlatform\Event;
+namespace dLdL\ChatbotPlatform\Event;
 
-use ChatbotPlatform\Message\AbstractMessage;
+use dLdL\ChatbotPlatform\Message\AbstractMessage;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Response;
 

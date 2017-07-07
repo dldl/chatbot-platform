@@ -1,12 +1,12 @@
 <?php
 
-namespace ChatbotPlatform\Action;
+namespace dLdL\ChatbotPlatform\Action;
 
-use ChatbotPlatform\Event\MessageEvent;
-use ChatbotPlatform\Message\AbstractMessage;
-use ChatbotPlatform\Message\EmptyMessage;
-use ChatbotPlatform\Message\SimpleMessage;
-use ChatbotPlatform\MessageActionInterface;
+use dLdL\ChatbotPlatform\Event\MessageEvent;
+use dLdL\ChatbotPlatform\Message\AbstractMessage;
+use dLdL\ChatbotPlatform\Message\EmptyMessage;
+use dLdL\ChatbotPlatform\Message\SimpleMessage;
+use dLdL\ChatbotPlatform\MessageActionInterface;
 
 class APIAIAction implements MessageActionInterface
 {

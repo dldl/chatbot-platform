@@ -1,10 +1,10 @@
 <?php
 
-namespace ChatbotPlatform;
+namespace dLdL\ChatbotPlatform;
 
-use ChatbotPlatform\Event\MessageEvent;
-use ChatbotPlatform\Event\RequestEvent;
-use ChatbotPlatform\Event\ReplyEvent;
+use dLdL\ChatbotPlatform\Event\MessageEvent;
+use dLdL\ChatbotPlatform\Event\RequestEvent;
+use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

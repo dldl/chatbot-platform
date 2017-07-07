@@ -1,16 +1,16 @@
 <?php
 
-namespace ChatbotPlatform\Handler;
+namespace dLdL\ChatbotPlatform\Handler;
 
-use ChatbotPlatform\ChatbotMessengers;
-use ChatbotPlatform\Event\RequestEvent;
-use ChatbotPlatform\Event\ReplyEvent;
-use ChatbotPlatform\Exception\MessageParsingException;
-use ChatbotPlatform\Message\AbstractMessage;
-use ChatbotPlatform\Message\EmptyMessage;
-use ChatbotPlatform\Message\NotificationMessage;
-use ChatbotPlatform\Message\SimpleMessage;
-use ChatbotPlatform\MessageHandlerInterface;
+use dLdL\ChatbotPlatform\ChatbotMessengers;
+use dLdL\ChatbotPlatform\Event\RequestEvent;
+use dLdL\ChatbotPlatform\Event\ReplyEvent;
+use dLdL\ChatbotPlatform\Exception\MessageParsingException;
+use dLdL\ChatbotPlatform\Message\AbstractMessage;
+use dLdL\ChatbotPlatform\Message\EmptyMessage;
+use dLdL\ChatbotPlatform\Message\NotificationMessage;
+use dLdL\ChatbotPlatform\Message\SimpleMessage;
+use dLdL\ChatbotPlatform\MessageHandlerInterface;
 use pimax\FbBotApp;
 use pimax\Messages\Message as FacebookMessage;
 use Symfony\Component\HttpFoundation\JsonResponse;

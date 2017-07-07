@@ -1,9 +1,9 @@
 <?php
 
-namespace ChatbotPlatform;
+namespace dLdL\ChatbotPlatform;
 
-use ChatbotPlatform\Event\RequestEvent;
-use ChatbotPlatform\Event\ReplyEvent;
+use dLdL\ChatbotPlatform\Event\RequestEvent;
+use dLdL\ChatbotPlatform\Event\ReplyEvent;
 
 interface MessageHandlerInterface
 {

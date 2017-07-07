@@ -1,10 +1,10 @@
 <?php
 
-namespace ChatbotPlatform\Action;
+namespace dLdL\ChatbotPlatform\Action;
 
-use ChatbotPlatform\Event\MessageEvent;
-use ChatbotPlatform\Message\SimpleMessage;
-use ChatbotPlatform\MessageActionInterface;
+use dLdL\ChatbotPlatform\Event\MessageEvent;
+use dLdL\ChatbotPlatform\Message\SimpleMessage;
+use dLdL\ChatbotPlatform\MessageActionInterface;
 
 class DumbMessageAction implements MessageActionInterface
 {

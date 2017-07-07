@@ -1,6 +1,6 @@
 <?php
 
-namespace ChatbotPlatform;
+namespace dLdL\ChatbotPlatform;
 
 final class ChatbotEvents
 {

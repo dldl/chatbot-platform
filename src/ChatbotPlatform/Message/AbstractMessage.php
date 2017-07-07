@@ -1,6 +1,6 @@
 <?php
 
-namespace ChatbotPlatform\Message;
+namespace dLdL\ChatbotPlatform\Message;
 
 abstract class AbstractMessage
 {

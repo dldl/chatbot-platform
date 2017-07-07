@@ -1,8 +1,8 @@
 <?php
 
-namespace ChatbotPlatform;
+namespace dLdL\ChatbotPlatform;
 
-use ChatbotPlatform\Event\MessageEvent;
+use dLdL\ChatbotPlatform\Event\MessageEvent;
 
 interface MessageActionInterface
 {
