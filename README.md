@@ -1,11 +1,11 @@
 # ChatbotPlatform
 
-**This platform is not tested and is a proof-of-concept.** We are open to any contribution.
+**This platform is not tested and is a proof-of-concept.** Any contributions are welcomed.
 
 ChatbotPlatform is a PHP library allowing to build a multiple chatbot platform with multiple
 actions providers and multiple sources.
 
-The current implementation allows basic Ajax interactions or Facebook Messenger discussions.
+The current implementation allows basic Ajax interactions or Facebook Messenger discussions. It can be extended easily.
 
 ## Installation
 
@@ -17,10 +17,10 @@ composer require dldl/chatbot-platform
 
 ## Basic usage
 
-ChatbotPlatform may be used as a standalone solution or integrated into existing applications
+ChatbotPlatform may be used as a standalone project or integrated into existing applications
 using any framework or CMS.
 
-For a basic usage, create an `index.php` file with the following code:
+For a basic standalone usage, create an `index.php` file with the following code:
 
 ```php
 <?php
@@ -35,7 +35,7 @@ use ChatbotPlatform\Action\APIAIAction;
 
 require __DIR__.'/vendor/autoload.php';
 
-(new Dotenv())->load(__DIR__.'/.env');
+(new Dotenv())->load(__DIR__.'/.env'); // Requires a .env file at project root to load configuration (see an example on .env.dist file)
 
 $request = Request::createFromGlobals();
 $chatbotPlatform = new ChatbotPlatform([
@@ -84,7 +84,7 @@ This action is a proof of concept system repeating what user just wrote.
 
 ### APIAIAction
 
-This action is sending the message to API.AI for message processing and response generation.
+This action is forwarding the message to API.AI for message processing and response generation.
 
 ## Extensibility
 
@@ -92,4 +92,4 @@ You may add your own message handlers by implementing the `MessageHandlerInterfa
 instance.
 
 You should also add your own actions by implementing the `MessageActionInterface` to perform custom actions when a message
-is received (or delegating the task to any external API).
+is received (e.g. generating a response or delegating the task to any external API).
