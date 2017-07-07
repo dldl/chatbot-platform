@@ -15,15 +15,15 @@ class DumbMessageAction implements MessageActionInterface
             return;
         }
 
-        if ($event->hasResponse()) {
+        if ($event->hasReply()) {
             return;
         }
 
-        $response = $this->handleMessage($message);
-        $event->setResponse($response);
+        $reply = $this->generateReply($message);
+        $event->setReply($reply);
     }
 
-    private function handleMessage(SimpleMessage $message): SimpleMessage
+    private function generateReply(SimpleMessage $message): SimpleMessage
     {
         $response = new SimpleMessage(
           $message->getRecipient(),

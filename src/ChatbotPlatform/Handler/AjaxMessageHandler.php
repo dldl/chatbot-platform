@@ -4,11 +4,12 @@ namespace ChatbotPlatform\Handler;
 
 use ChatbotPlatform\ChatbotMessengers;
 use ChatbotPlatform\Event\RequestEvent;
-use ChatbotPlatform\Event\ResponseEvent;
+use ChatbotPlatform\Event\ReplyEvent;
 use ChatbotPlatform\Exception\MessageParsingException;
 use ChatbotPlatform\Message\AbstractMessage;
 use ChatbotPlatform\Message\SimpleMessage;
 use ChatbotPlatform\MessageHandlerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class AjaxMessageHandler implements MessageHandlerInterface
@@ -23,17 +24,15 @@ class AjaxMessageHandler implements MessageHandlerInterface
         } catch (MessageParsingException $e) {}
     }
 
-    public function onResponse(ResponseEvent $event): void
+    public function onReply(ReplyEvent $event): void
     {
-        $response = $event->getResponse();
+        $reply = $event->getReply();
 
-        if ($response->getMessenger() !== ChatbotMessengers::AJAX || !$response instanceof SimpleMessage) {
+        if ($reply->getMessenger() !== ChatbotMessengers::AJAX || !$reply instanceof SimpleMessage) {
             return;
         }
 
-        $event->setRawResponse([
-          'response' => $response->getMessage(),
-        ]);
+        $event->setResponse(new JsonResponse(['reply' => $reply->getMessage()]));
     }
 
     private function handleRequest(Request $request): AbstractMessage

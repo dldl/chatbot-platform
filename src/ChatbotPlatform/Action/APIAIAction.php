@@ -19,14 +19,14 @@ class APIAIAction implements MessageActionInterface
             return;
         }
 
-        $response = $this->handleMessage($message);
+        $response = $this->callApi($message);
 
         if (!$response instanceof EmptyMessage) {
-            $event->setResponse($response);
+            $event->setReply($response);
         };
     }
 
-    private function handleMessage(SimpleMessage $message): AbstractMessage
+    private function callApi(SimpleMessage $message): AbstractMessage
     {
         $url = static::BASE_URL.'/query';
 
@@ -39,22 +39,22 @@ class APIAIAction implements MessageActionInterface
         ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        $rawResponse = json_decode(curl_exec($ch), true);
+        $rawReply = json_decode(curl_exec($ch), true);
 
         curl_close($ch);
 
-        if ($rawResponse['status']['code'] != 200 || $rawResponse['result']['action'] === 'input.unknown') {
+        if ($rawReply['status']['code'] != 200 || $rawReply['result']['action'] === 'input.unknown') {
             return new EmptyMessage($message->getMessenger());
         }
 
-        $response = new SimpleMessage(
+        $reply = new SimpleMessage(
           $message->getRecipient(),
           $message->getSender(),
           $message->getMessenger(),
-          $rawResponse['result']['speech']
+          $rawReply['result']['speech']
         );
 
-        return $response;
+        return $reply;
     }
 
     private function buildQuery(SimpleMessage $message): array

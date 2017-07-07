@@ -4,7 +4,7 @@ namespace ChatbotPlatform\Handler;
 
 use ChatbotPlatform\ChatbotMessengers;
 use ChatbotPlatform\Event\RequestEvent;
-use ChatbotPlatform\Event\ResponseEvent;
+use ChatbotPlatform\Event\ReplyEvent;
 use ChatbotPlatform\Exception\MessageParsingException;
 use ChatbotPlatform\Message\AbstractMessage;
 use ChatbotPlatform\Message\EmptyMessage;
@@ -13,6 +13,7 @@ use ChatbotPlatform\Message\SimpleMessage;
 use ChatbotPlatform\MessageHandlerInterface;
 use pimax\FbBotApp;
 use pimax\Messages\Message as FacebookMessage;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class FacebookMessageHandler implements MessageHandlerInterface
@@ -34,16 +35,16 @@ class FacebookMessageHandler implements MessageHandlerInterface
         } catch (MessageParsingException $e) {}
     }
 
-    public function onResponse(ResponseEvent $event): void
+    public function onReply(ReplyEvent $event): void
     {
-        $response = $event->getResponse();
+        $reply = $event->getReply();
 
-        if ($response->getMessenger() !== ChatbotMessengers::FACEBOOK || !$response instanceof SimpleMessage) {
+        if ($reply->getMessenger() !== ChatbotMessengers::FACEBOOK || !$reply instanceof SimpleMessage) {
             return;
         }
 
-        $rawResponse = $this->handleResponse($response);
-        $event->setRawResponse($rawResponse);
+        $rawReply = $this->handleResponse($reply);
+        $event->setResponse($rawReply);
     }
 
     private function handleRequest(Request $request): AbstractMessage
@@ -91,10 +92,10 @@ class FacebookMessageHandler implements MessageHandlerInterface
         return $message;
     }
 
-    private function handleResponse(SimpleMessage $message): array
+    private function handleResponse(SimpleMessage $message): JsonResponse
     {
         $facebookMessage = new FacebookMessage($message->getRecipient(), $message->getMessage());
 
-        return $this->bot->send($facebookMessage);
+        return new JsonResponse($this->bot->send($facebookMessage));
     }
 }

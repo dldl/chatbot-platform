@@ -6,7 +6,7 @@ final class ChatbotEvents
 {
     const REQUEST = 'chatbot.request';
     const MESSAGE = 'chatbot.message';
-    const RESPONSE = 'chatbot.response';
+    const REPLY = 'chatbot.reply';
 
     private function __construct()
     {

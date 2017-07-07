@@ -8,7 +8,7 @@ use Symfony\Component\EventDispatcher\Event;
 class MessageEvent extends Event
 {
     private $message;
-    private $response;
+    private $reply;
 
     public function __construct(AbstractMessage $message)
     {
@@ -20,18 +20,18 @@ class MessageEvent extends Event
         return $this->message;
     }
 
-    public function hasResponse(): bool
+    public function hasReply(): bool
     {
-        return null !== $this->response;
+        return null !== $this->reply;
     }
 
-    public function setResponse(AbstractMessage $response): void
+    public function setReply(AbstractMessage $reply): void
     {
-        $this->response = $response;
+        $this->reply = $reply;
     }
 
-    public function getResponse(): AbstractMessage
+    public function getReply(): AbstractMessage
     {
-        return $this->response;
+        return $this->reply;
     }
 }
