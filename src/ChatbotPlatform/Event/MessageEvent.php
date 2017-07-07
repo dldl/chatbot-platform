@@ -30,7 +30,7 @@ class MessageEvent extends Event
         $this->reply = $reply;
     }
 
-    public function getReply(): AbstractMessage
+    public function getReply(): ?AbstractMessage
     {
         return $this->reply;
     }
