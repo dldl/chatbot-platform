@@ -30,13 +30,13 @@ class FacebookMessageHandler implements MessageHandlerInterface
     {
         $request = $event->getRequest();
 
-        if ($request->getContentType() !== 'json') {
+        if ($this->isChallenge($request)) {
+            $event->setResponse($this->getChallengeResponse($request));
+
             return;
         }
 
-        if ($this->isChallenge($request)) {
-            $event->setResponse(new Response($request->getContent()['hub.verify_token']));
-
+        if ($request->getContentType() !== 'json') {
             return;
         }
 
@@ -60,9 +60,24 @@ class FacebookMessageHandler implements MessageHandlerInterface
 
     private function isChallenge(Request $request): bool
     {
-        $content = $request->getContent();
+        $challenge = $request->query->get('hub_challenge');
+        $token = $request->query->get('hub_verify_token');
+        $mode = $request->query->get('hub_mode');
 
-        return isset($content['hub.challenge']) && isset($content['hub.verify_token']);
+        return $challenge && $token && $mode == 'subscribe';
+    }
+
+    private function getChallengeResponse(Request $request): Response
+    {
+        $token = $request->query->get('hub_verify_token');
+
+        if (getenv('FACEBOOK_CHALLENGE_TOKEN') === $token) {
+            $challenge = $request->query->get('hub_challenge');
+        } else {
+            $challenge = 'invalid token';
+        }
+
+        return new Response($challenge);
     }
 
     private function handleRequest(Request $request): AbstractMessage
