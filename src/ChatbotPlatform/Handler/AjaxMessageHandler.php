@@ -35,7 +35,7 @@ class AjaxMessageHandler implements MessageHandlerInterface
         }
 
         $event->setResponse(new JsonResponse([
-          'message' => $reply->getNote()->getSpeech(),
+          'message' => $reply->getNote()->getContent(),
           'sender' => $reply->getSender(),
           'recipient' => $reply->getNote()->getRecipient(),
           'discussion_id' => $reply->getDiscussionId(),

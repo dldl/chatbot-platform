@@ -38,6 +38,6 @@ class MessageTest extends TestCase
         $this->assertFalse($message->hasNotification());
         $this->assertEquals('Michel', $message->getSender());
         $this->assertEquals('Albert', $message->getNote()->getRecipient());
-        $this->assertEquals('Hello!', $message->getNote()->getSpeech());
+        $this->assertEquals('Hello!', $message->getNote()->getContent());
     }
 }

@@ -8,12 +8,12 @@ namespace dLdL\ChatbotPlatform\Message;
 class Note
 {
     private $recipient;
-    private $speech;
+    private $content;
 
-    public function __construct(string $recipient, string $speech)
+    public function __construct(string $recipient, string $content)
     {
         $this->recipient = $recipient;
-        $this->speech = $speech;
+        $this->content = $content;
     }
 
     public function getRecipient(): string
@@ -21,8 +21,8 @@ class Note
         return $this->recipient;
     }
 
-    public function getSpeech(): string
+    public function getContent(): string
     {
-        return $this->speech;
+        return $this->content;
     }
 }

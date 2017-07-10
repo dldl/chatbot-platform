@@ -28,14 +28,14 @@ class RepeatMessageAction implements MessageActionInterface
         );
         $reply->setNote($note);
 
-        $event->setReply($message);
+        $event->setReply($reply);
     }
 
     private function getNote(Message $message): Note
     {
         $note = new Note(
           $message->getSender(),
-          'You\'ve just written "'.$message->getNote()->getSpeech().'".'
+          'You\'ve just written "'.$message->getNote()->getContent().'".'
         );
 
         return $note;

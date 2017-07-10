@@ -134,7 +134,7 @@ class FacebookMessageHandler implements MessageHandlerInterface
 
     private function sendNote(Note $note): JsonResponse
     {
-        $facebookMessage = new FacebookMessage($note->getRecipient(), $note->getSpeech());
+        $facebookMessage = new FacebookMessage($note->getRecipient(), $note->getContent());
 
         return new JsonResponse($this->bot->send($facebookMessage));
     }

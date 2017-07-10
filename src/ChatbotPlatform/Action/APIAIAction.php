@@ -67,7 +67,7 @@ class APIAIAction implements MessageActionInterface
     private function buildQuery(Message $message): array
     {
         return [
-            'query' => $message->getNote()->getSpeech(),
+            'query' => $message->getNote()->getContent(),
             'lang' => 'fr',
             'sessionId' => $message->getDiscussionId(),
         ];

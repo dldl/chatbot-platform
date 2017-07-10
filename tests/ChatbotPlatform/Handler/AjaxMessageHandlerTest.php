@@ -38,7 +38,7 @@ class AjaxMessageHandlerTest extends TestCase
         $message = $event->getMessage();
         $this->assertEquals('Michel', $message->getSender());
         $this->assertEquals('Albert', $message->getNote()->getRecipient());
-        $this->assertEquals('Hello!', $message->getNote()->getSpeech());
+        $this->assertEquals('Hello!', $message->getNote()->getContent());
     }
 
     public function testInvalidContentType()
