@@ -1,5 +1,7 @@
 # ChatbotPlatform
 
+[![Build Status](https://travis-ci.org/dldl/chatbot-platform.svg?branch=master)](https://travis-ci.org/dldl/chatbot-platform)
+
 **This platform is not heavy tested and is a proof-of-concept.** Any contributions are welcomed.
 
 ChatbotPlatform is a PHP library allowing to build a multiple chatbot platform with multiple
