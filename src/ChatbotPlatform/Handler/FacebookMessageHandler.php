@@ -97,18 +97,18 @@ class FacebookMessageHandler implements MessageHandlerInterface
     private function parseMessage(array $rawMessage)
     {
         if (isset($rawMessage['read'])) {
-            $message = new Message(ChatbotMessengers::FACEBOOK, '');
+            $message = new Message(ChatbotMessengers::FACEBOOK, $rawMessage['sender']['id']);
             $message->setNotification(new Notification(Notification::NOTIFICATION_READ));
 
             return $message;
         }
 
         if (!isset($rawMessage['message'])) {
-            return new Message(ChatbotMessengers::FACEBOOK, '');
+            return new Message(ChatbotMessengers::FACEBOOK, $rawMessage['sender']['id']);
         }
 
         if (isset($rawMessage['message']['is_echo'])) {
-            $message = new Message(ChatbotMessengers::FACEBOOK, '');
+            $message = new Message(ChatbotMessengers::FACEBOOK, $rawMessage['recipient']['id']);
             $message->setNotification(new Notification(Notification::NOTIFICATION_ECHO));
 
             return $message;
@@ -117,7 +117,6 @@ class FacebookMessageHandler implements MessageHandlerInterface
         $message = new Interaction(
           $rawMessage['sender']['id'],
           $rawMessage['recipient']['id'],
-          ChatbotMessengers::FACEBOOK,
           $rawMessage['message']['text']
         );
 
