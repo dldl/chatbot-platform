@@ -30,12 +30,17 @@ class DatabaseHelper
             return;
         }
 
-        $this->PDO->exec("CREATE TABLE note(
+        $this->PDO->exec("CREATE TABLE message(
             discussion_id VARCHAR(255),
             sender VARCHAR(30),
             recipient VARCHAR(30),
             content TEXT
         )");
+    }
+
+    public function getPDO()
+    {
+        return $this->PDO;
     }
 
     public function addMessage(Message $message): void
@@ -51,7 +56,7 @@ class DatabaseHelper
 
     public function popReply(Message $message): ?Message
     {
-        $sth = $this->PDO->prepare('SELECT * FROM note WHERE recipient = ? AND discussion_id = ?');
+        $sth = $this->PDO->prepare('SELECT * FROM message WHERE recipient = ? AND discussion_id = ?');
         $sth->execute([$message->getSender(), $message->getDiscussionId()]);
 
         $messages = $sth->fetchAll();
@@ -69,16 +74,18 @@ class DatabaseHelper
             }
         }
 
-        $message = new Message(
+        $reply = new Message(
           $message->getMessenger(),
           $message->getDiscussionId(),
           $messages[0]['sender'],
-          $message->getSender()
+          $messages[0]['recipient']
         );
 
-        $sth = $this->PDO->prepare('DELETE FROM note WHERE recipient = ?');
+        $reply->setContent($content);
+
+        $sth = $this->PDO->prepare('DELETE FROM message WHERE recipient = ?');
         $sth->execute([$message->getSender()]);
 
-        return $message;
+        return $reply;
     }
 }

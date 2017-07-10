@@ -20,7 +20,7 @@ class Notification
 
     /**
      * Async notifications are used to ask for potential responses (in naive
-     * implementations).
+     * implementations) or to save responses for later access.
      */
     const NOTIFICATION_ASYNC = 'notification.async';
 

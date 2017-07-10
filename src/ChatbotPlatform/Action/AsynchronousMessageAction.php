@@ -39,7 +39,7 @@ class AsynchronousMessageAction implements MessageActionInterface
 
         $reply = $this->database->popReply($message);
         if (null !== $reply) {
-            $event->setReply($message);
+            $event->setReply($reply);
         }
     }
 }

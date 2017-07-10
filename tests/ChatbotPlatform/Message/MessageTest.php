@@ -3,7 +3,6 @@
 namespace Tests\ChatbotPlatform\Message;
 
 use dLdL\ChatbotPlatform\ChatbotMessengers;
-use dLdL\ChatbotPlatform\Message\Note;
 use dLdL\ChatbotPlatform\Message\Message;
 use dLdL\ChatbotPlatform\Message\Notification;
 use PHPUnit\Framework\TestCase;

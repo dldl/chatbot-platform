@@ -7,7 +7,6 @@ use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use dLdL\ChatbotPlatform\Exception\MessageParsingException;
 use dLdL\ChatbotPlatform\Message\Message;
-use dLdL\ChatbotPlatform\Message\Note;
 use dLdL\ChatbotPlatform\MessageHandlerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

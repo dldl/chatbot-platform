@@ -1,11 +1,11 @@
 <?php
 
-namespace dLdL\ChatbotPlatform\Action;
+namespace Tests\dLdL\ChatbotPlatform\Action;
 
+use dLdL\ChatbotPlatform\Action\RepeatMessageAction;
 use dLdL\ChatbotPlatform\ChatbotMessengers;
 use dLdL\ChatbotPlatform\Event\MessageEvent;
 use dLdL\ChatbotPlatform\Message\Message;
-use dLdL\ChatbotPlatform\Message\Note;
 use PHPUnit\Framework\TestCase;
 
 class RepeatMessageActionTest extends TestCase

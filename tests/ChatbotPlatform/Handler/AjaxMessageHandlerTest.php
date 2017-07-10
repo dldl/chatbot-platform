@@ -6,7 +6,6 @@ use dLdL\ChatbotPlatform\ChatbotMessengers;
 use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Handler\AjaxMessageHandler;
-use dLdL\ChatbotPlatform\Message\Note;
 use dLdL\ChatbotPlatform\Message\Message;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
