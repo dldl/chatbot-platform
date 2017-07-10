@@ -32,7 +32,7 @@ use Symfony\Component\Dotenv\Dotenv;
 use dLdL\ChatbotPlatform\ChatbotPlatform;
 use dLdL\ChatbotPlatform\Handler\FacebookMessageHandler;
 use dLdL\ChatbotPlatform\Handler\AjaxMessageHandler;
-use dLdL\ChatbotPlatform\Action\DumbMessageAction;
+use dLdL\ChatbotPlatform\Action\RepeatMessageAction;
 use dLdL\ChatbotPlatform\Action\APIAIAction;
 
 require __DIR__.'/vendor/autoload.php';
@@ -45,7 +45,7 @@ $chatbotPlatform = new ChatbotPlatform([
     new AjaxMessageHandler(), // Enables discussion through basic HTTP requests
 ], [
     new APIAIAction(), // Enables API.AI support (configuration required in .env file)
-    new DumbMessageAction(), // Enables a dumb bot repeating anything you said
+    new RepeatMessageAction(), // Enables a bot repeating anything you said (useful for testing)
 ]);
 
 $response = $chatbotPlatform->handleRequest($request);
@@ -63,7 +63,7 @@ For `Ajax` support, you must send *POST* requests to your server with the follow
 	"message": "Hello world!",
 	"sender": "sender-id",
 	"recipient": "recipient-id",
-    "discussion_id": "12345"
+	"discussion_id": "12345"
 }
 ```
 
@@ -71,23 +71,9 @@ Reply will be returned immediately. Asynchronous replies are not (yet) supported
 
 ## Provided features
 
-ChatbotPlatform can be easily extended. It provides by default two message handlers and two action providers.
+ChatbotPlatform can be easily extended. It provides by default some message handlers and action providers.
 
-### AjaxMessageHandler
-
-This handler can be used to communicate with chatbots using basic http requests. See an example in the previous section.
-
-### FacebookMessageHandler
-
-This handler can be used to communicate through `FacebookMessenger`. It currently supports only basic messages.
-
-### DumbMessageAction
-
-This action is a proof of concept system repeating what user just wrote.
-
-### APIAIAction
-
-This action is forwarding the message to API.AI for message processing and reply generation.
+See `ChatbotPlatform/Handler` for available message handlers. See `ChatbotPlatform/Action` for available actions.
 
 ## Extensibility
 
