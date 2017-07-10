@@ -31,9 +31,7 @@ class APIAIAction implements MessageActionInterface
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(
-          $this->buildQuery($message->getInteraction()))
-        );
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->buildQuery($message)));
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
           'Content-Type: application/json; charset utf-8',
           'Authorization: Bearer ' . getenv('API_AI_TOKEN')
