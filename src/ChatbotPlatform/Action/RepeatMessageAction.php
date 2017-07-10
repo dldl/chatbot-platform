@@ -15,7 +15,7 @@ class RepeatMessageAction implements MessageActionInterface
     public function onMessage(MessageEvent $event): void
     {
         $message = $event->getMessage();
-        if ($event->hasReply() || $message->isEmpty()) {
+        if ($event->hasReply() || $message->isEmpty() || $message->hasNotification()) {
             return;
         }
 

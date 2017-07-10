@@ -7,6 +7,7 @@ use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use dLdL\ChatbotPlatform\Exception\MessageParsingException;
 use dLdL\ChatbotPlatform\Message\Message;
+use dLdL\ChatbotPlatform\Message\Notification;
 use dLdL\ChatbotPlatform\MessageHandlerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,6 +66,10 @@ class AjaxMessageHandler implements MessageHandlerInterface
           $rawMessage['sender'],
           $rawMessage['recipient']
         );
+
+        if (isset($rawMessage['notification'])) {
+            $message->setNotification(new Notification($rawMessage['notification']));
+        }
 
         $message->setContent($rawMessage['message']);
 
