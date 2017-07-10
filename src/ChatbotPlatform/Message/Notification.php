@@ -7,8 +7,22 @@ namespace dLdL\ChatbotPlatform\Message;
  */
 class Notification
 {
+    /**
+     * Read notifications means a given message has been read.
+     */
     const NOTIFICATION_READ = 'notification.read';
+
+    /**
+     * Echo notifications are copies from the last sent message to acknowledge
+     * receipt.
+     */
     const NOTIFICATION_ECHO = 'notification.echo';
+
+    /**
+     * Async notifications are used to ask for potential responses (in naive
+     * implementations).
+     */
+    const NOTIFICATION_ASYNC_AJAX = 'notification.async';
 
     private $type;
 
