@@ -1,6 +1,6 @@
 # ChatbotPlatform
 
-**This platform is not tested and is a proof-of-concept.** Any contributions are welcomed.
+**This platform is not heavy tested and is a proof-of-concept.** Any contributions are welcomed.
 
 ChatbotPlatform is a PHP library allowing to build a multiple chatbot platform with multiple
 actions providers and multiple sources.
@@ -27,11 +27,11 @@ For a basic standalone usage, create an `index.php` file with the following code
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Dotenv\Dotenv;
-use ChatbotPlatform\ChatbotPlatform;
-use ChatbotPlatform\Handler\FacebookMessageHandler;
-use ChatbotPlatform\Handler\AjaxMessageHandler;
-use ChatbotPlatform\Action\DumbMessageAction;
-use ChatbotPlatform\Action\APIAIAction;
+use dLdL\ChatbotPlatform\ChatbotPlatform;
+use dLdL\ChatbotPlatform\Handler\FacebookMessageHandler;
+use dLdL\ChatbotPlatform\Handler\AjaxMessageHandler;
+use dLdL\ChatbotPlatform\Action\DumbMessageAction;
+use dLdL\ChatbotPlatform\Action\APIAIAction;
 
 require __DIR__.'/vendor/autoload.php';
 
@@ -60,7 +60,8 @@ For `Ajax` support, you must send *POST* requests to your server with the follow
 {
 	"message": "Hello world!",
 	"sender": "sender-id",
-	"recipient": "recipient-id"
+	"recipient": "recipient-id",
+    "discussion_id": "12345"
 }
 ```
 

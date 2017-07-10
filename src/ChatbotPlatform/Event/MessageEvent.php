@@ -28,7 +28,7 @@ class MessageEvent extends Event
 
     public function setReply(Message $reply): void
     {
-        if ($reply->getDiscussion() !== $this->message->getDiscussion()) {
+        if ($reply->getDiscussionId() !== $this->message->getDiscussionId()) {
             throw new InvalidMessageException('Reply must have original message discussion ID');
         }
 

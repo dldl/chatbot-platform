@@ -25,7 +25,7 @@ class RequestEventTest extends TestCase
         $this->assertTrue($requestEvent->hasMessage());
         $this->assertTrue($requestEvent->isPropagationStopped());
         $this->assertSame($message, $requestEvent->getMessage());
-        $this->assertTrue($requestEvent->getMessage()->getDiscussion() === '12345');
+        $this->assertTrue($requestEvent->getMessage()->getDiscussionId() === '12345');
     }
 
     private function getMockRequest()

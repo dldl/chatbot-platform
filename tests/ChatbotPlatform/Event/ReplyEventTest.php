@@ -19,7 +19,7 @@ class ReplyEventTest extends TestCase
 
         $this->assertFalse($replyEvent->hasResponse());
         $this->assertSame($message, $replyEvent->getReply());
-        $this->assertTrue($replyEvent->getReply()->getDiscussion() === '12345');
+        $this->assertTrue($replyEvent->getReply()->getDiscussionId() === '12345');
     }
 
     public function testResponseEvent()

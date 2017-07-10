@@ -50,14 +50,14 @@ class AjaxMessageHandler implements MessageHandlerInterface
         if (!isset($rawMessage['message'])
           || !isset($rawMessage['recipient'])
           || !isset($rawMessage['sender'])
-          || !isset($rawMessage['discussion'])
+          || !isset($rawMessage['discussion_id'])
         ) {
             throw new MessageParsingException(
               'Ajax required fields not present'
             );
         }
 
-        return (new Message(ChatbotMessengers::AJAX, $rawMessage['discussion']))
+        return (new Message(ChatbotMessengers::AJAX, $rawMessage['discussion_id']))
           ->setInteraction(
             new Interaction(
               $rawMessage['sender'],

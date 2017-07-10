@@ -9,14 +9,14 @@ namespace dLdL\ChatbotPlatform\Message;
 class Message
 {
     private $messenger;
-    private $discussion;
+    private $discussionId;
     private $interaction;
     private $notification;
 
     public function __construct(string $messenger, string $discussion)
     {
         $this->messenger = $messenger;
-        $this->discussion = $discussion;
+        $this->discussionId = $discussion;
     }
 
     public function getMessenger(): string
@@ -24,9 +24,9 @@ class Message
         return $this->messenger;
     }
 
-    public function getDiscussion(): string
+    public function getDiscussionId(): string
     {
-        return $this->discussion;
+        return $this->discussionId;
     }
 
     public function isVoid()

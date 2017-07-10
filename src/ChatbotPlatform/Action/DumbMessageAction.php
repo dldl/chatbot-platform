@@ -17,7 +17,7 @@ class DumbMessageAction implements MessageActionInterface
         }
 
         $interaction = $this->generateInteraction($message->getInteraction());
-        $reply = new Message($message->getMessenger(), $message->getDiscussion());
+        $reply = new Message($message->getMessenger(), $message->getDiscussionId());
         $reply->setInteraction($interaction);
 
         $event->setReply($message);

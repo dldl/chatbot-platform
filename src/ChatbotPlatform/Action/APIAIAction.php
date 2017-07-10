@@ -48,7 +48,7 @@ class APIAIAction implements MessageActionInterface
             return null;
         }
 
-        $reply = (new Message($message->getMessenger(), $message->getDiscussion()))
+        $reply = (new Message($message->getMessenger(), $message->getDiscussionId()))
             ->setInteraction(
               new Interaction(
                 $message->getInteraction()->getRecipient(),
@@ -61,12 +61,12 @@ class APIAIAction implements MessageActionInterface
         return $reply;
     }
 
-    private function buildQuery(Interaction $interaction): array
+    private function buildQuery(Message $message): array
     {
         return [
-            'query' => $interaction->getSpeech(),
+            'query' => $message->getInteraction()->getSpeech(),
             'lang' => 'fr',
-            'sessionId' => $interaction->getSender(),
+            'sessionId' => $message->getDiscussionId(),
         ];
     }
 }
