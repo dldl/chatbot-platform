@@ -37,8 +37,8 @@ class AjaxMessageHandlerTest extends TestCase
 
         $message = $event->getMessage();
         $this->assertEquals('Michel', $message->getSender());
-        $this->assertEquals('Albert', $message->getNote()->getRecipient());
-        $this->assertEquals('Hello!', $message->getNote()->getContent());
+        $this->assertEquals('Albert', $message->getRecipient());
+        $this->assertEquals('Hello!', $message->getContent());
     }
 
     public function testInvalidContentType()
@@ -85,8 +85,8 @@ class AjaxMessageHandlerTest extends TestCase
 
     public function testSupportedReply()
     {
-        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel');
-        $message->setNote(new Note('Albert', 'Hello!'));
+        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel', 'Albert');
+        $message->setContent('Hello!');
 
         $event = new ReplyEvent($message);
         $handler = new AjaxMessageHandler();
@@ -99,7 +99,7 @@ class AjaxMessageHandlerTest extends TestCase
 
     public function testVoidReply()
     {
-        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel');
+        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel', 'Albert');
 
         $event = new ReplyEvent($message);
         $handler = new AjaxMessageHandler();

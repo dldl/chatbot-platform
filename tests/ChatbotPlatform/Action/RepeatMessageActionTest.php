@@ -12,8 +12,8 @@ class RepeatMessageActionTest extends TestCase
 {
     public function testOnMessage()
     {
-        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel');
-        $message->setNote(new Note('Albert', 'Hello!'));
+        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel', 'Albert');
+        $message->setContent('Hello!');
         $event = new MessageEvent($message);
 
         $action = new RepeatMessageAction();
@@ -21,6 +21,6 @@ class RepeatMessageActionTest extends TestCase
 
         $this->assertTrue($event->hasReply());
         $this->assertEquals('Albert', $event->getReply()->getSender());
-        $this->assertEquals('You\'ve just written "Hello!".', $event->getReply()->getNote()->getContent());
+        $this->assertEquals('You\'ve just written "Hello!".', $event->getReply()->getContent());
     }
 }

@@ -15,8 +15,8 @@ class MessageEventTest extends TestCase
      */
     public function testInvalidReply()
     {
-        $replyEvent = new MessageEvent(new Message(ChatbotMessengers::AJAX, '12345', 'Michel'));
+        $replyEvent = new MessageEvent(new Message(ChatbotMessengers::AJAX, '12345', 'Michel', 'Albert'));
 
-        $replyEvent->setReply(new Message(ChatbotMessengers::AJAX, '54321', 'Albert'));
+        $replyEvent->setReply(new Message(ChatbotMessengers::AJAX, '54321', 'Albert', 'Michel'));
     }
 }

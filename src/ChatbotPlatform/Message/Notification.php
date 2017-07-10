@@ -22,7 +22,7 @@ class Notification
      * Async notifications are used to ask for potential responses (in naive
      * implementations).
      */
-    const NOTIFICATION_ASYNC_AJAX = 'notification.async';
+    const NOTIFICATION_ASYNC = 'notification.async';
 
     private $type;
 

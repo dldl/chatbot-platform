@@ -18,7 +18,7 @@ class APIAIAction implements MessageActionInterface
     public function onMessage(MessageEvent $event): void
     {
         $message = $event->getMessage();
-        if ($event->hasReply() || $message->isVoid()) {
+        if ($event->hasReply() || $message->isEmpty()) {
             return;
         }
 
@@ -52,14 +52,11 @@ class APIAIAction implements MessageActionInterface
         $reply = new Message(
           $message->getMessenger(),
           $message->getDiscussionId(),
-          $message->getNote()->getRecipient()
-        );
-        $note = new Note(
-          $message->getSender(),
-          $rawReply['result']['speech']
+          $message->getRecipient(),
+          $message->getSender()
         );
 
-        $reply->setNote($note);
+        $reply->setContent($rawReply['result']['speech']);
 
         return $reply;
     }
@@ -67,7 +64,7 @@ class APIAIAction implements MessageActionInterface
     private function buildQuery(Message $message): array
     {
         return [
-            'query' => $message->getNote()->getContent(),
+            'query' => $message->getContent(),
             'lang' => 'fr',
             'sessionId' => $message->getDiscussionId(),
         ];

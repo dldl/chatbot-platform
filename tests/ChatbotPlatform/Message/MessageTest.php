@@ -12,32 +12,32 @@ class MessageTest extends TestCase
 {
     public function testVoidMessage()
     {
-        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel');
+        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel', 'Albert');
 
-        $this->assertTrue($message->isVoid());
-        $this->assertNull($message->getNote());
+        $this->assertTrue($message->isEmpty());
+        $this->assertSame('', $message->getContent());
         $this->assertNull($message->getNotification());
     }
 
     public function testNotificationMessage()
     {
-        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel');
+        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel', 'Albert');
         $message->setNotification(new Notification(Notification::NOTIFICATION_READ));
 
-        $this->assertTrue($message->isVoid());
+        $this->assertTrue($message->isEmpty());
         $this->assertTrue($message->hasNotification());
         $this->assertEquals(Notification::NOTIFICATION_READ, $message->getNotification()->getType());
     }
 
     public function testInteractionMessage()
     {
-        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel');
-        $message->setNote(new Note('Albert', 'Hello!'));
+        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel', 'Albert');
+        $message->setContent('Hello!');
 
-        $this->assertFalse($message->isVoid());
+        $this->assertFalse($message->isEmpty());
         $this->assertFalse($message->hasNotification());
         $this->assertEquals('Michel', $message->getSender());
-        $this->assertEquals('Albert', $message->getNote()->getRecipient());
-        $this->assertEquals('Hello!', $message->getNote()->getContent());
+        $this->assertEquals('Albert', $message->getRecipient());
+        $this->assertEquals('Hello!', $message->getContent());
     }
 }

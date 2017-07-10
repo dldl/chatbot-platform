@@ -7,7 +7,6 @@ use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use dLdL\ChatbotPlatform\Exception\MessageParsingException;
 use dLdL\ChatbotPlatform\Message\Message;
-use dLdL\ChatbotPlatform\Message\Note;
 use dLdL\ChatbotPlatform\Message\Notification;
 use dLdL\ChatbotPlatform\MessageHandlerInterface;
 use pimax\FbBotApp;
@@ -49,11 +48,11 @@ class FacebookMessageHandler implements MessageHandlerInterface
     {
         $reply = $event->getReply();
 
-        if ($reply->isVoid() || $reply->getMessenger() !== ChatbotMessengers::FACEBOOK) {
+        if ($reply->isEmpty() || $reply->getMessenger() !== ChatbotMessengers::FACEBOOK) {
             return;
         }
 
-        $rawReply = $this->sendNote($reply->getNote());
+        $rawReply = $this->sendMessage($reply);
         $event->setResponse($rawReply);
     }
 
@@ -96,22 +95,18 @@ class FacebookMessageHandler implements MessageHandlerInterface
 
     private function parseMessage(array $rawMessage): Message
     {
+        $message = new Message(
+          ChatbotMessengers::FACEBOOK,
+          'fb'.$rawMessage['sender']['id'],
+          $rawMessage['sender']['id'],
+          $rawMessage['recipient']['id']
+        );
+
         if (isset($rawMessage['message']['is_echo'])) {
-            $message = new Message(
-              ChatbotMessengers::FACEBOOK,
-              'fb'.$rawMessage['recipient']['id'],
-              $rawMessage['sender']['id']
-            );
             $message->setNotification(new Notification(Notification::NOTIFICATION_ECHO));
 
             return $message;
         }
-
-        $message = new Message(
-          ChatbotMessengers::FACEBOOK,
-          'fb'.$rawMessage['sender']['id'],
-          $rawMessage['sender']['id']
-        );
 
         if (isset($rawMessage['read'])) {
             $message->setNotification(new Notification(Notification::NOTIFICATION_READ));
@@ -123,18 +118,14 @@ class FacebookMessageHandler implements MessageHandlerInterface
             return $message;
         }
 
-        $note = new Note(
-          $rawMessage['recipient']['id'],
-          $rawMessage['message']['text']
-        );
-        $message->setNote($note);
+        $message->setContent($rawMessage['message']['text']);
 
         return $message;
     }
 
-    private function sendNote(Note $note): JsonResponse
+    private function sendMessage(Message $message): JsonResponse
     {
-        $facebookMessage = new FacebookMessage($note->getRecipient(), $note->getContent());
+        $facebookMessage = new FacebookMessage($message->getRecipient(), $message->getContent());
 
         return new JsonResponse($this->bot->send($facebookMessage));
     }

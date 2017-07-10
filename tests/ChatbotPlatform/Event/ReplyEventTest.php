@@ -12,7 +12,7 @@ class ReplyEventTest extends TestCase
 {
     public function testSimpleReplyEvent()
     {
-        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel');
+        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel', 'Albert');
         $replyEvent = new ReplyEvent($message);
 
         $this->assertFalse($replyEvent->hasResponse());
@@ -24,7 +24,7 @@ class ReplyEventTest extends TestCase
 
     public function testResponseEvent()
     {
-        $replyEvent = new ReplyEvent(new Message(ChatbotMessengers::AJAX, '12345', 'Michel'));
+        $replyEvent = new ReplyEvent(new Message(ChatbotMessengers::AJAX, '12345', 'Michel', 'Albert'));
 
         $this->assertFalse($replyEvent->hasResponse());
 

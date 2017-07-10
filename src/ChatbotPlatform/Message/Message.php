@@ -11,15 +11,18 @@ class Message
     private $messenger;
     private $discussionId;
     private $sender;
+    private $recipient;
 
-    private $note;
+    private $content;
     private $notification;
 
-    public function __construct(string $messenger, string $discussionId, string $sender)
+    public function __construct(string $messenger, string $discussionId, string $sender, string $recipient)
     {
         $this->messenger = $messenger;
         $this->discussionId = $discussionId;
         $this->sender = $sender;
+        $this->recipient = $recipient;
+        $this->content = '';
     }
 
     public function getMessenger(): string
@@ -37,19 +40,24 @@ class Message
         return $this->sender;
     }
 
-    public function isVoid()
+    public function getRecipient(): string
     {
-        return $this->note === null;
+        return $this->recipient;
     }
 
-    public function getNote(): ?Note
+    public function isEmpty()
     {
-        return $this->note;
+        return $this->content === '';
     }
 
-    public function setNote(Note $note): Message
+    public function getContent(): string
     {
-        $this->note = $note;
+        return $this->content;
+    }
+
+    public function setContent(string $content): Message
+    {
+        $this->content = $content;
 
         return $this;
     }

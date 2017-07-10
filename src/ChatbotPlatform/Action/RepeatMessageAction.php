@@ -16,28 +16,19 @@ class RepeatMessageAction implements MessageActionInterface
     public function onMessage(MessageEvent $event): void
     {
         $message = $event->getMessage();
-        if ($event->hasReply() || $message->isVoid()) {
+        if ($event->hasReply() || $message->isEmpty()) {
             return;
         }
 
-        $note = $this->getNote($message);
         $reply = new Message(
           $message->getMessenger(),
           $message->getDiscussionId(),
-          $message->getNote()->getRecipient()
+          $message->getRecipient(),
+          $message->getSender()
         );
-        $reply->setNote($note);
+
+        $reply->setContent('You\'ve just written "'.$message->getContent().'".');
 
         $event->setReply($reply);
-    }
-
-    private function getNote(Message $message): Note
-    {
-        $note = new Note(
-          $message->getSender(),
-          'You\'ve just written "'.$message->getNote()->getContent().'".'
-        );
-
-        return $note;
     }
 }
