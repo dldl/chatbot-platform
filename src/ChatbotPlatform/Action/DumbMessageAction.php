@@ -3,35 +3,34 @@
 namespace dLdL\ChatbotPlatform\Action;
 
 use dLdL\ChatbotPlatform\Event\MessageEvent;
-use dLdL\ChatbotPlatform\Message\SimpleMessage;
+use dLdL\ChatbotPlatform\Message\Interaction;
+use dLdL\ChatbotPlatform\Message\Message;
 use dLdL\ChatbotPlatform\MessageActionInterface;
 
 class DumbMessageAction implements MessageActionInterface
 {
     public function onMessage(MessageEvent $event): void
     {
-        if ($event->hasReply()) {
-            return;
-        }
-
         $message = $event->getMessage();
-        if (!$message instanceof SimpleMessage) {
+        if ($event->hasReply() || $message->isVoid()) {
             return;
         }
 
-        $reply = $this->generateReply($message);
-        $event->setReply($reply);
+        $interaction = $this->generateInteraction($message->getInteraction());
+        $reply = new Message($message->getMessenger(), $message->getDiscussion());
+        $reply->setInteraction($interaction);
+
+        $event->setReply($message);
     }
 
-    private function generateReply(SimpleMessage $message): SimpleMessage
+    private function generateInteraction(Interaction $message): Interaction
     {
-        $response = new SimpleMessage(
+        $interaction = new Interaction(
           $message->getRecipient(),
           $message->getSender(),
-          $message->getMessenger(),
-          '[dumb] You wrote "'.$message->getMessage().'"'
+          '[dumb] You wrote "'.$message->getSpeech().'"'
         );
 
-        return $response;
+        return $interaction;
     }
 }

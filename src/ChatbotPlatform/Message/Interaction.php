@@ -2,19 +2,21 @@
 
 namespace dLdL\ChatbotPlatform\Message;
 
-class SimpleMessage extends AbstractMessage
+/**
+ * An interaction is a speech, generally a sentence, sent from a sender to
+ * a recipient.
+ */
+class Interaction
 {
     private $sender;
     private $recipient;
-    private $message;
+    private $speech;
 
-    public function __construct(string $sender, string $recipient, string $messenger, string $message)
+    public function __construct(string $sender, string $recipient, string $speech)
     {
-        parent::__construct($messenger);
-
         $this->sender = $sender;
         $this->recipient = $recipient;
-        $this->message = $message;
+        $this->speech = $speech;
     }
 
     public function getSender(): string
@@ -27,8 +29,8 @@ class SimpleMessage extends AbstractMessage
         return $this->recipient;
     }
 
-    public function getMessage(): string
+    public function getSpeech(): string
     {
-        return $this->message;
+        return $this->speech;
     }
 }

@@ -6,10 +6,9 @@ use dLdL\ChatbotPlatform\ChatbotMessengers;
 use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use dLdL\ChatbotPlatform\Exception\MessageParsingException;
-use dLdL\ChatbotPlatform\Message\AbstractMessage;
-use dLdL\ChatbotPlatform\Message\EmptyMessage;
-use dLdL\ChatbotPlatform\Message\NotificationMessage;
-use dLdL\ChatbotPlatform\Message\SimpleMessage;
+use dLdL\ChatbotPlatform\Message\Message;
+use dLdL\ChatbotPlatform\Message\Interaction;
+use dLdL\ChatbotPlatform\Message\Notification;
 use dLdL\ChatbotPlatform\MessageHandlerInterface;
 use pimax\FbBotApp;
 use pimax\Messages\Message as FacebookMessage;
@@ -50,7 +49,7 @@ class FacebookMessageHandler implements MessageHandlerInterface
     {
         $reply = $event->getReply();
 
-        if (!$reply instanceof SimpleMessage || $reply->getMessenger() !== ChatbotMessengers::FACEBOOK) {
+        if (!$reply instanceof Interaction || $reply->getMessenger() !== ChatbotMessengers::FACEBOOK) {
             return;
         }
 
@@ -80,7 +79,7 @@ class FacebookMessageHandler implements MessageHandlerInterface
         return new Response($challenge);
     }
 
-    private function handleRequest(Request $request): AbstractMessage
+    private function handleRequest(Request $request): Message
     {
         $rawMessage = json_decode($request->getContent(), true);
 
@@ -92,26 +91,30 @@ class FacebookMessageHandler implements MessageHandlerInterface
             return $this->parseMessage($rawMessage['entry'][0]['messaging'][0]);
         }
 
-        return new EmptyMessage(ChatbotMessengers::FACEBOOK);
+        return new Message(ChatbotMessengers::FACEBOOK, '');
     }
 
     private function parseMessage(array $rawMessage)
     {
         if (isset($rawMessage['read'])) {
-            $message = new NotificationMessage(NotificationMessage::STATUS_READ, ChatbotMessengers::FACEBOOK);
+            $message = new Message(ChatbotMessengers::FACEBOOK, '');
+            $message->setNotification(new Notification(Notification::NOTIFICATION_READ));
 
             return $message;
         }
 
         if (!isset($rawMessage['message'])) {
-            return new EmptyMessage(ChatbotMessengers::FACEBOOK);
+            return new Message(ChatbotMessengers::FACEBOOK, '');
         }
 
         if (isset($rawMessage['message']['is_echo'])) {
-            return new NotificationMessage(NotificationMessage::STATUS_ECHO, ChatbotMessengers::FACEBOOK);
+            $message = new Message(ChatbotMessengers::FACEBOOK, '');
+            $message->setNotification(new Notification(Notification::NOTIFICATION_ECHO));
+
+            return $message;
         }
 
-        $message = new SimpleMessage(
+        $message = new Interaction(
           $rawMessage['sender']['id'],
           $rawMessage['recipient']['id'],
           ChatbotMessengers::FACEBOOK,
@@ -121,9 +124,9 @@ class FacebookMessageHandler implements MessageHandlerInterface
         return $message;
     }
 
-    private function handleResponse(SimpleMessage $message): JsonResponse
+    private function handleResponse(Interaction $message): JsonResponse
     {
-        $facebookMessage = new FacebookMessage($message->getRecipient(), $message->getMessage());
+        $facebookMessage = new FacebookMessage($message->getRecipient(), $message->getSpeech());
 
         return new JsonResponse($this->bot->send($facebookMessage));
     }

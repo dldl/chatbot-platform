@@ -2,7 +2,7 @@
 
 namespace dLdL\ChatbotPlatform\Event;
 
-use dLdL\ChatbotPlatform\Message\AbstractMessage;
+use dLdL\ChatbotPlatform\Message\Message;
 use Symfony\Component\EventDispatcher\Event;
 
 class MessageEvent extends Event
@@ -10,12 +10,12 @@ class MessageEvent extends Event
     private $message;
     private $reply;
 
-    public function __construct(AbstractMessage $message)
+    public function __construct(Message $message)
     {
         $this->message = $message;
     }
 
-    public function getMessage(): AbstractMessage
+    public function getMessage(): Message
     {
         return $this->message;
     }
@@ -25,12 +25,12 @@ class MessageEvent extends Event
         return null !== $this->reply;
     }
 
-    public function setReply(AbstractMessage $reply): void
+    public function setReply(Message $reply): void
     {
         $this->reply = $reply;
     }
 
-    public function getReply(): ?AbstractMessage
+    public function getReply(): ?Message
     {
         return $this->reply;
     }

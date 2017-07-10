@@ -2,7 +2,7 @@
 
 namespace dLdL\ChatbotPlatform\Event;
 
-use dLdL\ChatbotPlatform\Message\AbstractMessage;
+use dLdL\ChatbotPlatform\Message\Message;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -11,17 +11,17 @@ class ReplyEvent extends Event
     private $reply;
     private $response;
 
-    public function __construct(AbstractMessage $response)
+    public function __construct(Message $response)
     {
         $this->reply = $response;
     }
 
-    public function setReply(AbstractMessage $reply): void
+    public function setReply(Message $reply): void
     {
         $this->reply = $reply;
     }
 
-    public function getReply(): AbstractMessage
+    public function getReply(): Message
     {
         return $this->reply;
     }

@@ -2,7 +2,7 @@
 
 namespace dLdL\ChatbotPlatform\Event;
 
-use dLdL\ChatbotPlatform\Message\AbstractMessage;
+use dLdL\ChatbotPlatform\Message\Message;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,12 +28,12 @@ class RequestEvent extends Event
         return $this->message !== null;
     }
 
-    public function getMessage(): ?AbstractMessage
+    public function getMessage(): ?Message
     {
         return $this->message;
     }
 
-    public function setMessage(AbstractMessage $message): void
+    public function setMessage(Message $message): void
     {
         $this->message = $message;
 

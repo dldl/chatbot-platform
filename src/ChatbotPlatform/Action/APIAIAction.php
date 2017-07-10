@@ -3,9 +3,9 @@
 namespace dLdL\ChatbotPlatform\Action;
 
 use dLdL\ChatbotPlatform\Event\MessageEvent;
-use dLdL\ChatbotPlatform\Message\AbstractMessage;
+use dLdL\ChatbotPlatform\Message\Message;
 use dLdL\ChatbotPlatform\Message\EmptyMessage;
-use dLdL\ChatbotPlatform\Message\SimpleMessage;
+use dLdL\ChatbotPlatform\Message\Interaction;
 use dLdL\ChatbotPlatform\MessageActionInterface;
 
 class APIAIAction implements MessageActionInterface
@@ -14,29 +14,26 @@ class APIAIAction implements MessageActionInterface
 
     public function onMessage(MessageEvent $event): void
     {
-        if ($event->hasReply()) {
-            return;
-        }
-
         $message = $event->getMessage();
-        if (!$message instanceof SimpleMessage) {
+        if ($event->hasReply() || $message->isVoid()) {
             return;
         }
 
         $response = $this->callApi($message);
-
-        if (!$response instanceof EmptyMessage) {
+        if (null !== $response) {
             $event->setReply($response);
         };
     }
 
-    private function callApi(SimpleMessage $message): AbstractMessage
+    private function callApi(Message $message): ?Message
     {
         $url = static::BASE_URL.'/query';
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->buildQuery($message)));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(
+          $this->buildQuery($message->getInteraction()))
+        );
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
           'Content-Type: application/json; charset utf-8',
           'Authorization: Bearer ' . getenv('API_AI_TOKEN')
@@ -48,25 +45,28 @@ class APIAIAction implements MessageActionInterface
         curl_close($ch);
 
         if ($rawReply['status']['code'] != 200 || $rawReply['result']['action'] === 'input.unknown') {
-            return new EmptyMessage($message->getMessenger());
+            return null;
         }
 
-        $reply = new SimpleMessage(
-          $message->getRecipient(),
-          $message->getSender(),
-          $message->getMessenger(),
-          $rawReply['result']['speech']
-        );
+        $reply = (new Message($message->getMessenger(), $message->getDiscussion()))
+            ->setInteraction(
+              new Interaction(
+                $message->getInteraction()->getRecipient(),
+                $message->getInteraction()->getSender(),
+                $rawReply['result']['speech']
+              )
+            )
+        ;
 
         return $reply;
     }
 
-    private function buildQuery(SimpleMessage $message): array
+    private function buildQuery(Interaction $interaction): array
     {
         return [
-            'query' => $message->getMessage(),
+            'query' => $interaction->getSpeech(),
             'lang' => 'fr',
-            'sessionId' => $message->getSender(),
+            'sessionId' => $interaction->getSender(),
         ];
     }
 }

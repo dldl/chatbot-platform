@@ -6,14 +6,15 @@ use dLdL\ChatbotPlatform\ChatbotMessengers;
 use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use dLdL\ChatbotPlatform\Exception\MessageParsingException;
-use dLdL\ChatbotPlatform\Message\AbstractMessage;
-use dLdL\ChatbotPlatform\Message\SimpleMessage;
+use dLdL\ChatbotPlatform\Message\Message;
+use dLdL\ChatbotPlatform\Message\Interaction;
 use dLdL\ChatbotPlatform\MessageHandlerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class AjaxMessageHandler implements MessageHandlerInterface
 {
+
     public function onRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
@@ -21,21 +22,24 @@ class AjaxMessageHandler implements MessageHandlerInterface
         try {
             $message = $this->handleRequest($request);
             $event->setMessage($message);
-        } catch (MessageParsingException $e) {}
+        } catch (MessageParsingException $e) {
+        }
     }
 
     public function onReply(ReplyEvent $event): void
     {
         $reply = $event->getReply();
 
-        if ($reply->getMessenger() !== ChatbotMessengers::AJAX || !$reply instanceof SimpleMessage) {
+        if ($reply->getMessenger(
+          ) !== ChatbotMessengers::AJAX || !$reply instanceof Interaction
+        ) {
             return;
         }
 
-        $event->setResponse(new JsonResponse(['reply' => $reply->getMessage()]));
+        $event->setResponse(new JsonResponse(['reply' => $reply->getSpeech()]));
     }
 
-    private function handleRequest(Request $request): AbstractMessage
+    private function handleRequest(Request $request): Message
     {
         if ($request->getContentType() !== 'json') {
             throw new MessageParsingException('Only json is supported');
@@ -45,15 +49,21 @@ class AjaxMessageHandler implements MessageHandlerInterface
 
         if (!isset($rawMessage['message'])
           || !isset($rawMessage['recipient'])
-          || !isset($rawMessage['sender'])) {
-            throw new MessageParsingException('Ajax required fields not present');
+          || !isset($rawMessage['sender'])
+          || !isset($rawMessage['discussion'])
+        ) {
+            throw new MessageParsingException(
+              'Ajax required fields not present'
+            );
         }
 
-        return new SimpleMessage(
-          $rawMessage['sender'],
-          $rawMessage['recipient'],
-          ChatbotMessengers::AJAX,
-          $rawMessage['message']
-        );
+        return (new Message(ChatbotMessengers::AJAX, $rawMessage['discussion']))
+          ->setInteraction(
+            new Interaction(
+              $rawMessage['sender'],
+              $rawMessage['recipient'],
+              $rawMessage['message']
+            )
+          );
     }
 }
