@@ -11,9 +11,9 @@ class ReplyEvent extends Event
     private $reply;
     private $response;
 
-    public function __construct(Message $response)
+    public function __construct(Message $reply)
     {
-        $this->reply = $response;
+        $this->reply = $reply;
     }
 
     public function setReply(Message $reply): void

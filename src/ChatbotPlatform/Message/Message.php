@@ -34,7 +34,7 @@ class Message
         return $this->interaction === null;
     }
 
-    public function getInteraction(): Interaction
+    public function getInteraction(): ?Interaction
     {
         return $this->interaction;
     }
@@ -51,7 +51,7 @@ class Message
         return $this->notification !== null;
     }
 
-    public function getNotification(): Notification
+    public function getNotification(): ?Notification
     {
         return $this->notification;
     }

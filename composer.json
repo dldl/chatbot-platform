@@ -7,6 +7,9 @@
             "dLdL\\ChatbotPlatform\\": "src/ChatbotPlatform"
         }
     },
+    "autoload-dev": {
+        "psr-4": { "Tests\\": "tests/" }
+    },
     "require": {
         "php": ">=7.1",
         "symfony/http-foundation": "^2.8|^3.0",
