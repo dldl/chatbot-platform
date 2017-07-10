@@ -2,8 +2,12 @@
 
 namespace Tests\ChatbotPlatform\Handler;
 
+use dLdL\ChatbotPlatform\ChatbotMessengers;
+use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Handler\AjaxMessageHandler;
+use dLdL\ChatbotPlatform\Message\Interaction;
+use dLdL\ChatbotPlatform\Message\Message;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -79,6 +83,32 @@ class AjaxMessageHandlerTest extends TestCase
         $this->assertNull($event->getResponse());
     }
 
+    public function testSupportedReply()
+    {
+        $message = new Message(ChatbotMessengers::AJAX, '12345');
+        $message->setInteraction(new Interaction('Michel', 'Albert', 'Hello!'));
+
+        $event = new ReplyEvent($message);
+        $handler = new AjaxMessageHandler();
+
+        $handler->onReply($event);
+
+        $this->assertTrue($event->hasResponse());
+        $this->assertEquals($this->getValidContent(), $event->getResponse()->getContent());
+    }
+
+    public function testVoidReply()
+    {
+        $message = new Message(ChatbotMessengers::AJAX, '12345');
+
+        $event = new ReplyEvent($message);
+        $handler = new AjaxMessageHandler();
+
+        $handler->onReply($event);
+
+        $this->assertFalse($event->hasResponse());
+    }
+
     private function getRequestMock()
     {
         $request = $this
@@ -96,7 +126,7 @@ class AjaxMessageHandlerTest extends TestCase
           'message' => 'Hello!',
           'sender' => 'Michel',
           'recipient' => 'Albert',
-          'discussion' => '12345'
+          'discussion_id' => '12345'
         ]);
     }
 

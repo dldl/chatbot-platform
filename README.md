@@ -67,7 +67,7 @@ For `Ajax` support, you must send *POST* requests to your server with the follow
 }
 ```
 
-Response will be returned immediately. Asynchronous responses are not (yet) supported.
+Reply will be returned immediately. Asynchronous replies are not (yet) supported.
 
 ## Provided features
 
@@ -87,7 +87,7 @@ This action is a proof of concept system repeating what user just wrote.
 
 ### APIAIAction
 
-This action is forwarding the message to API.AI for message processing and response generation.
+This action is forwarding the message to API.AI for message processing and reply generation.
 
 ## Extensibility
 
@@ -95,4 +95,4 @@ You may add your own message handlers by implementing the `MessageHandlerInterfa
 instance.
 
 You should also add your own actions by implementing the `MessageActionInterface` to perform custom actions when a message
-is received (e.g. generating a response or delegating the task to any external API).
+is received (e.g. generating a reply or delegating the task to any external API).

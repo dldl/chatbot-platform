@@ -30,13 +30,16 @@ class AjaxMessageHandler implements MessageHandlerInterface
     {
         $reply = $event->getReply();
 
-        if ($reply->getMessenger(
-          ) !== ChatbotMessengers::AJAX || !$reply instanceof Interaction
-        ) {
+        if ($reply->getMessenger() !== ChatbotMessengers::AJAX || $reply->isVoid()) {
             return;
         }
 
-        $event->setResponse(new JsonResponse(['reply' => $reply->getSpeech()]));
+        $event->setResponse(new JsonResponse([
+          'message' => $reply->getInteraction()->getSpeech(),
+          'sender' => $reply->getInteraction()->getSender(),
+          'recipient' => $reply->getInteraction()->getRecipient(),
+          'discussion_id' => $reply->getDiscussionId(),
+        ]));
     }
 
     private function handleRequest(Request $request): Message
