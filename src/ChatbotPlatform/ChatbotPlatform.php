@@ -23,7 +23,13 @@ class ChatbotPlatform
         }
 
         foreach ($actions as $action) {
-            $this->dispatcher->addListener(ChatbotEvents::MESSAGE, [$action, 'onMessage']);
+            $priority = 0;
+            if (is_array($action)) {
+                $priority = $action[1];
+                $action = $action[0];
+            }
+
+            $this->dispatcher->addListener(ChatbotEvents::MESSAGE, [$action, 'onMessage'], $priority);
         }
     }
 

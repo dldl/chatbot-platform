@@ -44,13 +44,15 @@ $chatbotPlatform = new ChatbotPlatform([
     new FacebookMessageHandler(), // Enables discussion through Facebook messenger (configuration required in .env file)
     new AjaxMessageHandler(), // Enables discussion through basic HTTP requests
 ], [
-    new APIAIAction(), // Enables API.AI support (configuration required in .env file)
+    [new APIAIAction(), 10], // Enables API.AI support (configuration required in .env file)
     new RepeatMessageAction(), // Enables a bot repeating anything you said (useful for testing)
 ]);
 
 $response = $chatbotPlatform->handleRequest($request);
 $response->send();
 ```
+
+As you can see, you may pass an action instance or an array with the action instance and the priority it should hold.
 
 You can then start a server redirecting to this file, and send requests from `Facebook` or an
 `Ajax` script.
