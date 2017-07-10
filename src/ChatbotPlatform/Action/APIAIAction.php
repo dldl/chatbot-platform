@@ -4,7 +4,6 @@ namespace dLdL\ChatbotPlatform\Action;
 
 use dLdL\ChatbotPlatform\Event\MessageEvent;
 use dLdL\ChatbotPlatform\Message\Message;
-use dLdL\ChatbotPlatform\Message\EmptyMessage;
 use dLdL\ChatbotPlatform\Message\Interaction;
 use dLdL\ChatbotPlatform\MessageActionInterface;
 
