@@ -7,7 +7,7 @@ use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use dLdL\ChatbotPlatform\Exception\MessageParsingException;
 use dLdL\ChatbotPlatform\Message\Message;
-use dLdL\ChatbotPlatform\Message\Interaction;
+use dLdL\ChatbotPlatform\Message\Note;
 use dLdL\ChatbotPlatform\MessageHandlerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,9 +35,9 @@ class AjaxMessageHandler implements MessageHandlerInterface
         }
 
         $event->setResponse(new JsonResponse([
-          'message' => $reply->getInteraction()->getSpeech(),
-          'sender' => $reply->getInteraction()->getSender(),
-          'recipient' => $reply->getInteraction()->getRecipient(),
+          'message' => $reply->getNote()->getSpeech(),
+          'sender' => $reply->getSender(),
+          'recipient' => $reply->getNote()->getRecipient(),
           'discussion_id' => $reply->getDiscussionId(),
         ]));
     }
@@ -60,13 +60,18 @@ class AjaxMessageHandler implements MessageHandlerInterface
             );
         }
 
-        return (new Message(ChatbotMessengers::AJAX, $rawMessage['discussion_id']))
-          ->setInteraction(
-            new Interaction(
-              $rawMessage['sender'],
-              $rawMessage['recipient'],
-              $rawMessage['message']
-            )
-          );
+        $message = new Message(
+          ChatbotMessengers::AJAX,
+          $rawMessage['discussion_id'],
+          $rawMessage['sender']
+        );
+
+        $note = new Note(
+          $rawMessage['recipient'],
+          $rawMessage['message']
+        );
+        $message->setNote($note);
+
+        return $message;
     }
 }

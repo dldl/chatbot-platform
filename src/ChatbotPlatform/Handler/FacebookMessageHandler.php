@@ -7,7 +7,7 @@ use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use dLdL\ChatbotPlatform\Exception\MessageParsingException;
 use dLdL\ChatbotPlatform\Message\Message;
-use dLdL\ChatbotPlatform\Message\Interaction;
+use dLdL\ChatbotPlatform\Message\Note;
 use dLdL\ChatbotPlatform\Message\Notification;
 use dLdL\ChatbotPlatform\MessageHandlerInterface;
 use pimax\FbBotApp;
@@ -49,11 +49,11 @@ class FacebookMessageHandler implements MessageHandlerInterface
     {
         $reply = $event->getReply();
 
-        if (!$reply instanceof Interaction || $reply->getMessenger() !== ChatbotMessengers::FACEBOOK) {
+        if ($reply->isVoid() || $reply->getMessenger() !== ChatbotMessengers::FACEBOOK) {
             return;
         }
 
-        $rawReply = $this->handleResponse($reply);
+        $rawReply = $this->sendNote($reply->getNote());
         $event->setResponse($rawReply);
     }
 
@@ -91,41 +91,50 @@ class FacebookMessageHandler implements MessageHandlerInterface
             return $this->parseMessage($rawMessage['entry'][0]['messaging'][0]);
         }
 
-        return new Message(ChatbotMessengers::FACEBOOK, '');
+        throw new MessageParsingException('Unsupported Facebook message');
     }
 
-    private function parseMessage(array $rawMessage)
+    private function parseMessage(array $rawMessage): Message
     {
+        if (isset($rawMessage['message']['is_echo'])) {
+            $message = new Message(
+              ChatbotMessengers::FACEBOOK,
+              'fb'.$rawMessage['recipient']['id'],
+              $rawMessage['sender']['id']
+            );
+            $message->setNotification(new Notification(Notification::NOTIFICATION_ECHO));
+
+            return $message;
+        }
+
+        $message = new Message(
+          ChatbotMessengers::FACEBOOK,
+          'fb'.$rawMessage['sender']['id'],
+          $rawMessage['sender']['id']
+        );
+
         if (isset($rawMessage['read'])) {
-            $message = new Message(ChatbotMessengers::FACEBOOK, $rawMessage['sender']['id']);
             $message->setNotification(new Notification(Notification::NOTIFICATION_READ));
 
             return $message;
         }
 
         if (!isset($rawMessage['message'])) {
-            return new Message(ChatbotMessengers::FACEBOOK, $rawMessage['sender']['id']);
-        }
-
-        if (isset($rawMessage['message']['is_echo'])) {
-            $message = new Message(ChatbotMessengers::FACEBOOK, $rawMessage['recipient']['id']);
-            $message->setNotification(new Notification(Notification::NOTIFICATION_ECHO));
-
             return $message;
         }
 
-        $message = new Interaction(
-          $rawMessage['sender']['id'],
+        $note = new Note(
           $rawMessage['recipient']['id'],
           $rawMessage['message']['text']
         );
+        $message->setNote($note);
 
         return $message;
     }
 
-    private function handleResponse(Interaction $message): JsonResponse
+    private function sendNote(Note $note): JsonResponse
     {
-        $facebookMessage = new FacebookMessage($message->getRecipient(), $message->getSpeech());
+        $facebookMessage = new FacebookMessage($note->getRecipient(), $note->getSpeech());
 
         return new JsonResponse($this->bot->send($facebookMessage));
     }

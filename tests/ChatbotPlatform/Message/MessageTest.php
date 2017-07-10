@@ -3,7 +3,7 @@
 namespace Tests\ChatbotPlatform\Message;
 
 use dLdL\ChatbotPlatform\ChatbotMessengers;
-use dLdL\ChatbotPlatform\Message\Interaction;
+use dLdL\ChatbotPlatform\Message\Note;
 use dLdL\ChatbotPlatform\Message\Message;
 use dLdL\ChatbotPlatform\Message\Notification;
 use PHPUnit\Framework\TestCase;
@@ -12,16 +12,16 @@ class MessageTest extends TestCase
 {
     public function testVoidMessage()
     {
-        $message = new Message(ChatbotMessengers::AJAX, '12345');
+        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel');
 
         $this->assertTrue($message->isVoid());
-        $this->assertNull($message->getInteraction());
+        $this->assertNull($message->getNote());
         $this->assertNull($message->getNotification());
     }
 
     public function testNotificationMessage()
     {
-        $message = new Message(ChatbotMessengers::AJAX, '12345');
+        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel');
         $message->setNotification(new Notification(Notification::NOTIFICATION_READ));
 
         $this->assertTrue($message->isVoid());
@@ -31,13 +31,13 @@ class MessageTest extends TestCase
 
     public function testInteractionMessage()
     {
-        $message = new Message(ChatbotMessengers::AJAX, '12345');
-        $message->setInteraction(new Interaction('michel', 'albert', 'Hello!'));
+        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel');
+        $message->setNote(new Note('Albert', 'Hello!'));
 
         $this->assertFalse($message->isVoid());
         $this->assertFalse($message->hasNotification());
-        $this->assertEquals('michel', $message->getInteraction()->getSender());
-        $this->assertEquals('albert', $message->getInteraction()->getRecipient());
-        $this->assertEquals('Hello!', $message->getInteraction()->getSpeech());
+        $this->assertEquals('Michel', $message->getSender());
+        $this->assertEquals('Albert', $message->getNote()->getRecipient());
+        $this->assertEquals('Hello!', $message->getNote()->getSpeech());
     }
 }

@@ -3,20 +3,23 @@
 namespace dLdL\ChatbotPlatform\Message;
 
 /**
- * A message is a piece of information sent by a messenger and taking part
- * of a discussion.
+ * A message is a piece of information sent on a messenger by a sender
+ * and taking part of a discussion.
  */
 class Message
 {
     private $messenger;
     private $discussionId;
-    private $interaction;
+    private $sender;
+
+    private $note;
     private $notification;
 
-    public function __construct(string $messenger, string $discussion)
+    public function __construct(string $messenger, string $discussionId, string $sender)
     {
         $this->messenger = $messenger;
-        $this->discussionId = $discussion;
+        $this->discussionId = $discussionId;
+        $this->sender = $sender;
     }
 
     public function getMessenger(): string
@@ -29,19 +32,24 @@ class Message
         return $this->discussionId;
     }
 
+    public function getSender(): string
+    {
+        return $this->sender;
+    }
+
     public function isVoid()
     {
-        return $this->interaction === null;
+        return $this->note === null;
     }
 
-    public function getInteraction(): ?Interaction
+    public function getNote(): ?Note
     {
-        return $this->interaction;
+        return $this->note;
     }
 
-    public function setInteraction(Interaction $interaction): Message
+    public function setNote(Note $note): Message
     {
-        $this->interaction = $interaction;
+        $this->note = $note;
 
         return $this;
     }

@@ -6,7 +6,7 @@ use dLdL\ChatbotPlatform\ChatbotMessengers;
 use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Handler\AjaxMessageHandler;
-use dLdL\ChatbotPlatform\Message\Interaction;
+use dLdL\ChatbotPlatform\Message\Note;
 use dLdL\ChatbotPlatform\Message\Message;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,9 +36,9 @@ class AjaxMessageHandlerTest extends TestCase
         $this->assertTrue($event->hasMessage());
 
         $message = $event->getMessage();
-        $this->assertEquals('Michel', $message->getInteraction()->getSender());
-        $this->assertEquals('Albert', $message->getInteraction()->getRecipient());
-        $this->assertEquals('Hello!', $message->getInteraction()->getSpeech());
+        $this->assertEquals('Michel', $message->getSender());
+        $this->assertEquals('Albert', $message->getNote()->getRecipient());
+        $this->assertEquals('Hello!', $message->getNote()->getSpeech());
     }
 
     public function testInvalidContentType()
@@ -85,8 +85,8 @@ class AjaxMessageHandlerTest extends TestCase
 
     public function testSupportedReply()
     {
-        $message = new Message(ChatbotMessengers::AJAX, '12345');
-        $message->setInteraction(new Interaction('Michel', 'Albert', 'Hello!'));
+        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel');
+        $message->setNote(new Note('Albert', 'Hello!'));
 
         $event = new ReplyEvent($message);
         $handler = new AjaxMessageHandler();
@@ -99,7 +99,7 @@ class AjaxMessageHandlerTest extends TestCase
 
     public function testVoidReply()
     {
-        $message = new Message(ChatbotMessengers::AJAX, '12345');
+        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel');
 
         $event = new ReplyEvent($message);
         $handler = new AjaxMessageHandler();

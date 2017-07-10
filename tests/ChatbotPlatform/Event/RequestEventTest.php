@@ -18,7 +18,7 @@ class RequestEventTest extends TestCase
         $this->assertFalse($requestEvent->hasMessage());
         $this->assertFalse($requestEvent->isPropagationStopped());
 
-        $message = new Message(ChatbotMessengers::AJAX, '12345');
+        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel');
         $requestEvent->setMessage($message);
 
         $this->assertFalse($requestEvent->hasResponse());

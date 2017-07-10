@@ -4,9 +4,13 @@ namespace dLdL\ChatbotPlatform\Action;
 
 use dLdL\ChatbotPlatform\Event\MessageEvent;
 use dLdL\ChatbotPlatform\Message\Message;
-use dLdL\ChatbotPlatform\Message\Interaction;
+use dLdL\ChatbotPlatform\Message\Note;
 use dLdL\ChatbotPlatform\MessageActionInterface;
 
+/**
+ * APIAIAction can be used to delegate message comprehension through
+ * machine learning mechanisms proposed by API.AI.
+ */
 class APIAIAction implements MessageActionInterface
 {
     const BASE_URL = 'https://api.api.ai/api';
@@ -45,15 +49,17 @@ class APIAIAction implements MessageActionInterface
             return null;
         }
 
-        $reply = (new Message($message->getMessenger(), $message->getDiscussionId()))
-            ->setInteraction(
-              new Interaction(
-                $message->getInteraction()->getRecipient(),
-                $message->getInteraction()->getSender(),
-                $rawReply['result']['speech']
-              )
-            )
-        ;
+        $reply = new Message(
+          $message->getMessenger(),
+          $message->getDiscussionId(),
+          $message->getNote()->getRecipient()
+        );
+        $note = new Note(
+          $message->getSender(),
+          $rawReply['result']['speech']
+        );
+
+        $reply->setNote($note);
 
         return $reply;
     }
@@ -61,7 +67,7 @@ class APIAIAction implements MessageActionInterface
     private function buildQuery(Message $message): array
     {
         return [
-            'query' => $message->getInteraction()->getSpeech(),
+            'query' => $message->getNote()->getSpeech(),
             'lang' => 'fr',
             'sessionId' => $message->getDiscussionId(),
         ];
