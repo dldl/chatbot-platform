@@ -65,6 +65,7 @@ class AjaxMessageHandler implements MessageHandlerInterface
           'sender' => $reply->getSender(),
           'recipient' => $reply->getRecipient(),
           'discussion_id' => $reply->getDiscussionId(),
+          'flags' => $reply->getFlags()->all()
         ]));
     }
 }

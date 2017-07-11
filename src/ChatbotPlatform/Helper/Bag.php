@@ -40,6 +40,11 @@ class Bag
         unset($this->items[$item]);
     }
 
+    public function all()
+    {
+        return $this->items;
+    }
+
     public function __toString()
     {
         $nbItems = count($this->items);
