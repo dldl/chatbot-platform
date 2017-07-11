@@ -6,7 +6,7 @@ use dLdL\ChatbotPlatform\ChatbotMessengers;
 use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use dLdL\ChatbotPlatform\Message\Message;
-use dLdL\ChatbotPlatform\Message\FlagBag;
+use dLdL\ChatbotPlatform\Message\Flag;
 use dLdL\ChatbotPlatform\MessageHandlerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -44,7 +44,7 @@ class AjaxMessageHandler implements MessageHandlerInterface
         );
 
         if (isset($rawMessage['flag'])) {
-            $message->getFlags()->add(new FlagBag($rawMessage['flag']));
+            $message->getFlags()->add(new Flag($rawMessage['flag']));
         }
 
         $message->setContent($rawMessage['message']);

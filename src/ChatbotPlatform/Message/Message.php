@@ -2,6 +2,8 @@
 
 namespace dLdL\ChatbotPlatform\Message;
 
+use dLdL\ChatbotPlatform\Helper\Bag;
+
 /**
  * A message is a piece of information sent on a messenger by a sender
  * and taking part of a discussion.
@@ -23,7 +25,7 @@ class Message
         $this->sender = $sender;
         $this->recipient = $recipient;
         $this->content = '';
-        $this->flags = new FlagBag();
+        $this->flags = new Bag();
     }
 
     public function getMessenger(): string

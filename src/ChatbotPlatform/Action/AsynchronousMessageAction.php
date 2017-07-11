@@ -4,7 +4,7 @@ namespace dLdL\ChatbotPlatform\Action;
 
 use dLdL\ChatbotPlatform\Event\MessageEvent;
 use dLdL\ChatbotPlatform\Helper\DatabaseHelper;
-use dLdL\ChatbotPlatform\Message\FlagBag;
+use dLdL\ChatbotPlatform\Message\Flag;
 use dLdL\ChatbotPlatform\MessageActionInterface;
 
 /**
@@ -28,13 +28,13 @@ class AsynchronousMessageAction implements MessageActionInterface
             return;
         }
 
-        if ($message->getFlags()->has(FlagBag::FLAG_ASYNC_SAVE)) {
+        if ($message->getFlags()->has(Flag::FLAG_ASYNC_SAVE)) {
             $this->database->saveMessage($message);
 
             return;
         }
 
-        if ($message->getFlags()->has(FlagBag::FLAG_ASYNC_GET)) {
+        if ($message->getFlags()->has(Flag::FLAG_ASYNC_GET)) {
             $reply = $this->database->popReply($message);
             if (null !== $reply) {
                 $event->setReply($reply);

@@ -4,7 +4,7 @@ namespace Tests\ChatbotPlatform\Message;
 
 use dLdL\ChatbotPlatform\ChatbotMessengers;
 use dLdL\ChatbotPlatform\Message\Message;
-use dLdL\ChatbotPlatform\Message\FlagBag;
+use dLdL\ChatbotPlatform\Message\Flag;
 use PHPUnit\Framework\TestCase;
 
 class MessageTest extends TestCase
@@ -21,11 +21,11 @@ class MessageTest extends TestCase
     public function testFlaggedMessage()
     {
         $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel', 'Albert');
-        $message->getFlags()->add(FlagBag::FLAG_READ);
+        $message->getFlags()->add(Flag::FLAG_READ);
 
         $this->assertTrue($message->isEmpty());
         $this->assertTrue($message->getFlags()->hasAny());
-        $this->assertTrue($message->getFlags()->has(FlagBag::FLAG_READ));
+        $this->assertTrue($message->getFlags()->has(Flag::FLAG_READ));
     }
 
     public function testInteractionMessage()
