@@ -8,19 +8,19 @@ use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use dLdL\ChatbotPlatform\Message\Message;
 use dLdL\ChatbotPlatform\Message\Tag;
 use dLdL\ChatbotPlatform\MessageHandlerInterface;
-use pimax\FbBotApp;
-use pimax\Messages\Message as FacebookMessage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class FacebookMessageHandler implements MessageHandlerInterface
 {
-    private $bot;
+    private $token;
+    private $endpoint;
 
     public function __construct()
     {
-        $this->bot = new FbBotApp(getenv('FACEBOOK_MESSENGER_TOKEN'));
+        $this->token = getenv('FACEBOOK_MESSENGER_TOKEN');
+        $this->endpoint = 'https://graph.facebook.com/v2.6/me/messages';
     }
 
     public function onRequest(RequestEvent $event): void
@@ -46,13 +46,11 @@ class FacebookMessageHandler implements MessageHandlerInterface
     {
         $reply = $event->getReply();
 
-        if ($reply->isEmpty() || $reply->getMessenger() !== ChatbotMessengers::FACEBOOK) {
+        if ($reply->isEmpty() || $reply->getMessenger() !== ChatbotMessengers::FACEBOOK || $reply->getTags()->count() > 1) {
             return;
         }
 
-        $facebookMessage = new FacebookMessage($reply->getRecipient(), $reply->getContent());
-
-        $event->setResponse(new JsonResponse($this->bot->send($facebookMessage)));
+        $event->setResponse(new JsonResponse($this->sendMessage($reply)));
     }
 
     private function isChallenge(Request $request): bool
@@ -113,5 +111,35 @@ class FacebookMessageHandler implements MessageHandlerInterface
         $message->setContent($rawMessage['message']['text']);
 
         return $message;
+    }
+
+    private function sendMessage(Message $message): array
+    {
+        $data['recipient']['id'] = $message->getRecipient();
+        $data['message']['text'] = $message->getContent();
+
+        if ($message->getTags()->hasAny()) {
+            $data['tag'] = $message->getTags()->all()[0];
+        }
+
+        $data = [];
+        $data['access_token'] = $this->token;
+
+        $headers = [
+          'Content-Type: application/json',
+        ];
+
+        $process = curl_init($this->endpoint);
+        curl_setopt($process, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($process, CURLOPT_HEADER, false);
+        curl_setopt($process, CURLOPT_TIMEOUT, 30);
+        curl_setopt($process, CURLOPT_POST, 1);
+        curl_setopt($process, CURLOPT_POSTFIELDS, http_build_query($data));
+
+        curl_setopt($process, CURLOPT_RETURNTRANSFER, true);
+        $return = curl_exec($process);
+        curl_close($process);
+
+        return json_decode($return, true);
     }
 }

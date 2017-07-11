@@ -27,7 +27,7 @@ class ItemsCollection
 
     public function hasAny(): bool
     {
-        return count($this->items) > 0;
+        return $this->count() > 0;
     }
 
     public function add($item): void
@@ -43,6 +43,11 @@ class ItemsCollection
     public function all()
     {
         return $this->items;
+    }
+
+    public function count()
+    {
+        return count($this->items);
     }
 
     public function __toString()

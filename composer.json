@@ -14,7 +14,6 @@
         "php": ">=7.1",
         "symfony/http-foundation": "^2.8|^3.0",
         "symfony/event-dispatcher": "^2.8|^3.0",
-        "pimax/fb-messenger-php": "^1.0",
         "symfony/dotenv": "^3.3"
     },
     "require-dev": {
