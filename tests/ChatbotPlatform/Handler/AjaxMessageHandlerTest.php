@@ -177,7 +177,7 @@ class AjaxMessageHandlerTest extends TestCase
           'sender' => 'Michel',
           'recipient' => 'Albert',
           'discussion_id' => '12345',
-          'tags' => [Tag::TAG_ECHO => Tag::TAG_ECHO]
+          'tags' => [Tag::TAG_ECHO]
         ]);
     }
 

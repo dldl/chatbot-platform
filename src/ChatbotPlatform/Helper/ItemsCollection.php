@@ -32,17 +32,19 @@ class ItemsCollection
 
     public function add($item): void
     {
-        $this->items[$item] = $item;
+        $this->items[] = $item;
     }
 
     public function remove($item): void
     {
-        unset($this->items[$item]);
+        if (($key = array_search($item, $this->items)) !== false) {
+            unset($this->items[$key]);
+        }
     }
 
     public function all()
     {
-        return $this->items;
+        return array_values($this->items);
     }
 
     public function count()
