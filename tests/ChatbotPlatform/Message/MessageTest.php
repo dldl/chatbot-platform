@@ -15,17 +15,17 @@ class MessageTest extends TestCase
 
         $this->assertTrue($message->isEmpty());
         $this->assertSame('', $message->getContent());
-        $this->assertFalse($message->getFlagBag()->hasAny());
+        $this->assertFalse($message->getFlags()->hasAny());
     }
 
     public function testFlaggedMessage()
     {
         $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel', 'Albert');
-        $message->getFlagBag()->add(FlagBag::FLAG_READ);
+        $message->getFlags()->add(FlagBag::FLAG_READ);
 
         $this->assertTrue($message->isEmpty());
-        $this->assertTrue($message->getFlagBag()->hasAny());
-        $this->assertTrue($message->getFlagBag()->has(FlagBag::FLAG_READ));
+        $this->assertTrue($message->getFlags()->hasAny());
+        $this->assertTrue($message->getFlags()->has(FlagBag::FLAG_READ));
     }
 
     public function testInteractionMessage()
@@ -34,7 +34,7 @@ class MessageTest extends TestCase
         $message->setContent('Hello!');
 
         $this->assertFalse($message->isEmpty());
-        $this->assertFalse($message->getFlagBag()->hasAny());
+        $this->assertFalse($message->getFlags()->hasAny());
         $this->assertEquals('Michel', $message->getSender());
         $this->assertEquals('Albert', $message->getRecipient());
         $this->assertEquals('Hello!', $message->getContent());

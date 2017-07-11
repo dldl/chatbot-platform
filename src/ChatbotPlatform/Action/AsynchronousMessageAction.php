@@ -24,17 +24,17 @@ class AsynchronousMessageAction implements MessageActionInterface
     public function onMessage(MessageEvent $event): void
     {
         $message = $event->getMessage();
-        if ($event->hasReply() || !$message->getFlagBag()->hasAny()) {
+        if ($event->hasReply() || !$message->getFlags()->hasAny()) {
             return;
         }
 
-        if ($message->getFlagBag()->has(FlagBag::FLAG_ASYNC_SAVE)) {
+        if ($message->getFlags()->has(FlagBag::FLAG_ASYNC_SAVE)) {
             $this->database->saveMessage($message);
 
             return;
         }
 
-        if ($message->getFlagBag()->has(FlagBag::FLAG_ASYNC_GET)) {
+        if ($message->getFlags()->has(FlagBag::FLAG_ASYNC_GET)) {
             $reply = $this->database->popReply($message);
             if (null !== $reply) {
                 $event->setReply($reply);

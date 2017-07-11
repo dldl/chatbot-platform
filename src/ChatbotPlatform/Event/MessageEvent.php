@@ -2,7 +2,6 @@
 
 namespace dLdL\ChatbotPlatform\Event;
 
-use dLdL\ChatbotPlatform\Exception\InvalidMessageException;
 use dLdL\ChatbotPlatform\Message\Message;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -29,7 +28,7 @@ class MessageEvent extends Event
     public function setReply(Message $reply): void
     {
         if ($reply->getDiscussionId() !== $this->message->getDiscussionId()) {
-            throw new InvalidMessageException('Reply must have original message discussion ID');
+            throw new \InvalidArgumentException('Reply must have original message discussion ID');
         }
 
         $this->reply = $reply;

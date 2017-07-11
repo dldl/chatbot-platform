@@ -14,7 +14,7 @@ class Message
     private $recipient;
 
     private $content;
-    private $flagBag;
+    private $flags;
 
     public function __construct(string $messenger, string $discussionId, string $sender, string $recipient)
     {
@@ -23,7 +23,7 @@ class Message
         $this->sender = $sender;
         $this->recipient = $recipient;
         $this->content = '';
-        $this->flagBag = new FlagBag();
+        $this->flags = new FlagBag();
     }
 
     public function getMessenger(): string
@@ -63,8 +63,8 @@ class Message
         return $this;
     }
 
-    public function getFlagBag()
+    public function getFlags()
     {
-        return $this->flagBag;
+        return $this->flags;
     }
 }

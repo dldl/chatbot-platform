@@ -5,12 +5,10 @@ namespace dLdL\ChatbotPlatform\Handler;
 use dLdL\ChatbotPlatform\ChatbotMessengers;
 use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Event\ReplyEvent;
-use dLdL\ChatbotPlatform\Exception\MessageParsingException;
 use dLdL\ChatbotPlatform\Message\Message;
 use dLdL\ChatbotPlatform\Message\FlagBag;
 use dLdL\ChatbotPlatform\MessageHandlerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 
 class AjaxMessageHandler implements MessageHandlerInterface
 {
@@ -18,12 +16,40 @@ class AjaxMessageHandler implements MessageHandlerInterface
     public function onRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
-
-        try {
-            $message = $this->handleRequest($request);
-            $event->setMessage($message);
-        } catch (MessageParsingException $e) {
+        if ($request->getContentType() !== 'json') {
+            return;
         }
+
+        $message = $this->parseMessage(json_decode($request->getContent(), true));
+        if (null !== $message) {
+            $event->setMessage($message);
+        }
+    }
+
+    private function parseMessage(array $rawMessage): ?Message
+    {
+        if (!isset($rawMessage['message'])
+          || !isset($rawMessage['recipient'])
+          || !isset($rawMessage['sender'])
+          || !isset($rawMessage['discussion_id'])
+        ) {
+            return null;
+        }
+
+        $message = new Message(
+          ChatbotMessengers::AJAX,
+          $rawMessage['discussion_id'],
+          $rawMessage['sender'],
+          $rawMessage['recipient']
+        );
+
+        if (isset($rawMessage['flag'])) {
+            $message->getFlags()->add(new FlagBag($rawMessage['flag']));
+        }
+
+        $message->setContent($rawMessage['message']);
+
+        return $message;
     }
 
     public function onReply(ReplyEvent $event): void
@@ -40,39 +66,5 @@ class AjaxMessageHandler implements MessageHandlerInterface
           'recipient' => $reply->getRecipient(),
           'discussion_id' => $reply->getDiscussionId(),
         ]));
-    }
-
-    private function handleRequest(Request $request): Message
-    {
-        if ($request->getContentType() !== 'json') {
-            throw new MessageParsingException('Only json is supported');
-        }
-
-        $rawMessage = json_decode($request->getContent(), true);
-
-        if (!isset($rawMessage['message'])
-          || !isset($rawMessage['recipient'])
-          || !isset($rawMessage['sender'])
-          || !isset($rawMessage['discussion_id'])
-        ) {
-            throw new MessageParsingException(
-              'Ajax required fields not present'
-            );
-        }
-
-        $message = new Message(
-          ChatbotMessengers::AJAX,
-          $rawMessage['discussion_id'],
-          $rawMessage['sender'],
-          $rawMessage['recipient']
-        );
-
-        if (isset($rawMessage['flag'])) {
-            $message->getFlagBag()->add(new FlagBag($rawMessage['flag']));
-        }
-
-        $message->setContent($rawMessage['message']);
-
-        return $message;
     }
 }

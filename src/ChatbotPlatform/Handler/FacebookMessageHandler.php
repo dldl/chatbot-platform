@@ -5,7 +5,6 @@ namespace dLdL\ChatbotPlatform\Handler;
 use dLdL\ChatbotPlatform\ChatbotMessengers;
 use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Event\ReplyEvent;
-use dLdL\ChatbotPlatform\Exception\MessageParsingException;
 use dLdL\ChatbotPlatform\Message\Message;
 use dLdL\ChatbotPlatform\Message\FlagBag;
 use dLdL\ChatbotPlatform\MessageHandlerInterface;
@@ -27,7 +26,6 @@ class FacebookMessageHandler implements MessageHandlerInterface
     public function onRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
-
         if ($this->isChallenge($request)) {
             $event->setResponse($this->getChallengeResponse($request));
 
@@ -38,10 +36,10 @@ class FacebookMessageHandler implements MessageHandlerInterface
             return;
         }
 
-        try {
-            $message = $this->handleRequest($request);
+        $message = $this->parseMessage(json_decode($request->getContent(), true));
+        if ($message !== null) {
             $event->setMessage($message);
-        } catch (MessageParsingException $e) {}
+        }
     }
 
     public function onReply(ReplyEvent $event): void
@@ -52,8 +50,9 @@ class FacebookMessageHandler implements MessageHandlerInterface
             return;
         }
 
-        $rawReply = $this->sendMessage($reply);
-        $event->setResponse($rawReply);
+        $facebookMessage = new FacebookMessage($reply->getRecipient(), $reply->getContent());
+
+        $event->setResponse(new JsonResponse($this->bot->send($facebookMessage)));
     }
 
     private function isChallenge(Request $request): bool
@@ -78,38 +77,31 @@ class FacebookMessageHandler implements MessageHandlerInterface
         return new Response($challenge);
     }
 
-    private function handleRequest(Request $request): Message
+    private function parseMessage(array $rawMessage): ?Message
     {
-        $rawMessage = json_decode($request->getContent(), true);
-
         if (!isset($rawMessage['entry']) || !isset($rawMessage['entry'][0]['messaging'])) {
-            throw new MessageParsingException('It does not seems to be a Facebook message');
+            return null;
         }
 
-        if (!empty($rawMessage['entry'][0]['messaging'])) {
-            return $this->parseMessage($rawMessage['entry'][0]['messaging'][0]);
+        if (empty($rawMessage['entry'][0]['messaging'])) {
+            return null;
         }
 
-        throw new MessageParsingException('Unsupported Facebook message');
-    }
-
-    private function parseMessage(array $rawMessage): Message
-    {
         $message = new Message(
           ChatbotMessengers::FACEBOOK,
-          'fb'.$rawMessage['sender']['id'],
+          $rawMessage['sender']['id'],
           $rawMessage['sender']['id'],
           $rawMessage['recipient']['id']
         );
 
         if (isset($rawMessage['message']['is_echo'])) {
-            $message->getFlagBag()->add(FlagBag::FLAG_ECHO);
+            $message->getFlags()->add(FlagBag::FLAG_ECHO);
 
             return $message;
         }
 
         if (isset($rawMessage['read'])) {
-            $message->getFlagBag()->add(FlagBag::FLAG_READ);
+            $message->getFlags()->add(FlagBag::FLAG_READ);
 
             return $message;
         }
@@ -121,12 +113,5 @@ class FacebookMessageHandler implements MessageHandlerInterface
         $message->setContent($rawMessage['message']['text']);
 
         return $message;
-    }
-
-    private function sendMessage(Message $message): JsonResponse
-    {
-        $facebookMessage = new FacebookMessage($message->getRecipient(), $message->getContent());
-
-        return new JsonResponse($this->bot->send($facebookMessage));
     }
 }

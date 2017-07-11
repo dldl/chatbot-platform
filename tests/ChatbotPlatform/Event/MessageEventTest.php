@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 class MessageEventTest extends TestCase
 {
     /**
-     * @expectedException \dLdL\ChatbotPlatform\Exception\InvalidMessageException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Reply must have original message discussion ID
      */
     public function testInvalidReply()
