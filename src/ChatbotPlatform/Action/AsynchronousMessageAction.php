@@ -29,12 +29,14 @@ class AsynchronousMessageAction implements MessageActionInterface
         }
 
         if ($message->getTags()->has(Tag::TAG_ASYNC_SAVE)) {
+            $message->getTags()->remove(Tag::TAG_ASYNC_SAVE);
             $this->database->saveMessage($message);
 
             return;
         }
 
         if ($message->getTags()->has(Tag::TAG_ASYNC_GET)) {
+            $message->getTags()->remove(Tag::TAG_ASYNC_GET);
             $reply = $this->database->popReply($message);
             if (null !== $reply) {
                 $event->setReply($reply);
