@@ -6,7 +6,7 @@ use dLdL\ChatbotPlatform\ChatbotMessengers;
 use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Handler\AjaxMessageHandler;
-use dLdL\ChatbotPlatform\Message\Flag;
+use dLdL\ChatbotPlatform\Message\Tag;
 use dLdL\ChatbotPlatform\Message\Message;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +41,7 @@ class AjaxMessageHandlerTest extends TestCase
         $this->assertEquals('Hello!', $message->getContent());
     }
 
-    public function testFlaggedRequest()
+    public function testTaggedMessage()
     {
         $request = $this->getRequestMock();
         $request
@@ -53,7 +53,7 @@ class AjaxMessageHandlerTest extends TestCase
         $request
           ->expects($this->once())
           ->method('getContent')
-          ->willReturn($this->getValidFlaggedContent())
+          ->willReturn($this->getValidTaggedContent())
         ;
 
         $event = new RequestEvent($request);
@@ -62,7 +62,7 @@ class AjaxMessageHandlerTest extends TestCase
         $handler->onRequest($event);
 
         $this->assertTrue($event->hasMessage());
-        $this->assertEquals(json_decode($this->getValidFlaggedContent(), true)['flags'], $event->getMessage()->getFlags()->all());
+        $this->assertEquals(json_decode($this->getValidTaggedContent(), true)['tags'], $event->getMessage()->getTags()->all());
     }
 
     public function testInvalidContentType()
@@ -133,11 +133,11 @@ class AjaxMessageHandlerTest extends TestCase
         $this->assertFalse($event->hasResponse());
     }
 
-    public function testFlaggedReply()
+    public function testTaggedReply()
     {
         $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel', 'Albert');
         $message->setContent('Hello!');
-        $message->getFlags()->add(Flag::FLAG_ECHO);
+        $message->getTags()->add(Tag::TAG_ECHO);
 
         $event = new ReplyEvent($message);
         $handler = new AjaxMessageHandler();
@@ -145,7 +145,7 @@ class AjaxMessageHandlerTest extends TestCase
         $handler->onReply($event);
 
         $this->assertTrue($event->hasResponse());
-        $this->assertEquals($this->getValidFlaggedContent(), $event->getResponse()->getContent());
+        $this->assertEquals($this->getValidTaggedContent(), $event->getResponse()->getContent());
     }
 
     private function getRequestMock()
@@ -166,18 +166,18 @@ class AjaxMessageHandlerTest extends TestCase
           'sender' => 'Michel',
           'recipient' => 'Albert',
           'discussion_id' => '12345',
-          'flags' => []
+          'tags' => []
         ]);
     }
 
-    private function getValidFlaggedContent()
+    private function getValidTaggedContent()
     {
         return json_encode([
           'message' => 'Hello!',
           'sender' => 'Michel',
           'recipient' => 'Albert',
           'discussion_id' => '12345',
-          'flags' => [Flag::FLAG_ECHO => Flag::FLAG_ECHO]
+          'tags' => [Tag::TAG_ECHO => Tag::TAG_ECHO]
         ]);
     }
 
@@ -188,7 +188,7 @@ class AjaxMessageHandlerTest extends TestCase
           'sender' => 'Michel',
           'recipient' => 'Albert',
           'discuss' => '12345',
-          'flags' => []
+          'tags' => []
         ]);
     }
 }

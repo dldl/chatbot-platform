@@ -6,7 +6,7 @@ use dLdL\ChatbotPlatform\ChatbotMessengers;
 use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use dLdL\ChatbotPlatform\Message\Message;
-use dLdL\ChatbotPlatform\Message\Flag;
+use dLdL\ChatbotPlatform\Message\Tag;
 use dLdL\ChatbotPlatform\MessageHandlerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -43,9 +43,9 @@ class AjaxMessageHandler implements MessageHandlerInterface
           $rawMessage['recipient']
         );
 
-        if (isset($rawMessage['flags']) && is_array($rawMessage['flags']) && !empty($rawMessage['flags'])) {
-            foreach ($rawMessage['flags'] as $flag) {
-                $message->getFlags()->add($flag);
+        if (isset($rawMessage['tags']) && is_array($rawMessage['tags']) && !empty($rawMessage['tags'])) {
+            foreach ($rawMessage['tags'] as $tag) {
+                $message->getTags()->add($tag);
             }
         }
 
@@ -67,7 +67,7 @@ class AjaxMessageHandler implements MessageHandlerInterface
           'sender' => $reply->getSender(),
           'recipient' => $reply->getRecipient(),
           'discussion_id' => $reply->getDiscussionId(),
-          'flags' => $reply->getFlags()->all()
+          'tags' => $reply->getTags()->all()
         ]));
     }
 }

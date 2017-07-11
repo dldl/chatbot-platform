@@ -6,7 +6,7 @@ use dLdL\ChatbotPlatform\ChatbotMessengers;
 use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use dLdL\ChatbotPlatform\Message\Message;
-use dLdL\ChatbotPlatform\Message\Flag;
+use dLdL\ChatbotPlatform\Message\Tag;
 use dLdL\ChatbotPlatform\MessageHandlerInterface;
 use pimax\FbBotApp;
 use pimax\Messages\Message as FacebookMessage;
@@ -95,13 +95,13 @@ class FacebookMessageHandler implements MessageHandlerInterface
         );
 
         if (isset($rawMessage['message']['is_echo'])) {
-            $message->getFlags()->add(Flag::FLAG_ECHO);
+            $message->getTags()->add(Tag::TAG_ECHO);
 
             return $message;
         }
 
         if (isset($rawMessage['read'])) {
-            $message->getFlags()->add(Flag::FLAG_READ);
+            $message->getTags()->add(Tag::TAG_READ);
 
             return $message;
         }

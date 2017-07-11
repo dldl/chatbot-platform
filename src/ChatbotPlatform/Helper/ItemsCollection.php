@@ -3,9 +3,9 @@
 namespace dLdL\ChatbotPlatform\Helper;
 
 /**
- * A bag contains items.
+ * A collection of items.
  */
-class Bag
+class ItemsCollection
 {
     private $items;
 

@@ -7,7 +7,7 @@ use dLdL\ChatbotPlatform\ChatbotMessengers;
 use dLdL\ChatbotPlatform\Event\MessageEvent;
 use dLdL\ChatbotPlatform\Helper\DatabaseHelper;
 use dLdL\ChatbotPlatform\Message\Message;
-use dLdL\ChatbotPlatform\Message\Flag;
+use dLdL\ChatbotPlatform\Message\Tag;
 use PHPUnit\Framework\TestCase;
 
 class AsynchronousMessageActionTest extends TestCase
@@ -26,7 +26,7 @@ class AsynchronousMessageActionTest extends TestCase
     {
         $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel', 'Albert');
         $message->setContent('Hello!');
-        $message->getFlags()->add(Flag::FLAG_ASYNC_SAVE);
+        $message->getTags()->add(Tag::TAG_ASYNC_SAVE);
         $event = new MessageEvent($message);
 
         $action = new AsynchronousMessageAction($this->database);
@@ -43,7 +43,7 @@ class AsynchronousMessageActionTest extends TestCase
     public function testRemove(AsynchronousMessageAction $action): AsynchronousMessageAction
     {
         $message = new Message(ChatbotMessengers::AJAX, '12345', 'Albert', 'Michel');
-        $message->getFlags()->add(Flag::FLAG_ASYNC_GET);
+        $message->getTags()->add(Tag::TAG_ASYNC_GET);
         $event = new MessageEvent($message);
 
         $action->onMessage($event);
@@ -64,7 +64,7 @@ class AsynchronousMessageActionTest extends TestCase
     {
 
         $message = new Message(ChatbotMessengers::AJAX, '12345', 'Albert', 'Michel');
-        $message->getFlags()->add(Flag::FLAG_ASYNC_GET);
+        $message->getTags()->add(Tag::TAG_ASYNC_GET);
         $event = new MessageEvent($message);
 
         $action->onMessage($event);
