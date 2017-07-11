@@ -46,7 +46,7 @@ class FacebookMessageHandler implements MessageHandlerInterface
     {
         $reply = $event->getReply();
 
-        if ($reply->isEmpty() || $reply->getMessenger() !== ChatbotMessengers::FACEBOOK || $reply->getTags()->count() > 1) {
+        if ($reply->isEmpty() || $reply->getMessenger() !== ChatbotMessengers::FACEBOOK) {
             return;
         }
 
@@ -115,14 +115,10 @@ class FacebookMessageHandler implements MessageHandlerInterface
 
     private function sendMessage(Message $message): array
     {
+        $data = [];
+
         $data['recipient']['id'] = $message->getRecipient();
         $data['message']['text'] = $message->getContent();
-
-        if ($message->getTags()->hasAny()) {
-            $data['tag'] = $message->getTags()->all()[0];
-        }
-
-        $data = [];
         $data['access_token'] = $this->token;
 
         $headers = [
