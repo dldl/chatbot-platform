@@ -43,7 +43,7 @@ class DatabaseHelper
         return $this->PDO;
     }
 
-    public function addMessage(Message $message): void
+    public function saveMessage(Message $message): void
     {
         $sth = $this->PDO->prepare('INSERT INTO message VALUES (?, ?, ?, ?)');
         $sth->execute([

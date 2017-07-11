@@ -4,13 +4,12 @@ namespace dLdL\ChatbotPlatform\Action;
 
 use dLdL\ChatbotPlatform\Event\MessageEvent;
 use dLdL\ChatbotPlatform\Helper\DatabaseHelper;
-use dLdL\ChatbotPlatform\Message\Message;
-use dLdL\ChatbotPlatform\Message\Notification;
+use dLdL\ChatbotPlatform\Message\FlagBag;
 use dLdL\ChatbotPlatform\MessageActionInterface;
 
 /**
  * AsynchronousAjaxMessageAction is a naive implementation for asynchronous responses.
- * It will handle messages with an ASYNC notification by saving them or responding
+ * It will handle messages with an ASYNC flags by saving them or responding
  * (if message is void) with saved messages.
  */
 class AsynchronousMessageAction implements MessageActionInterface
@@ -25,21 +24,21 @@ class AsynchronousMessageAction implements MessageActionInterface
     public function onMessage(MessageEvent $event): void
     {
         $message = $event->getMessage();
-        if ($event->hasReply()
-          || !$message->hasNotification()
-          || !$message->getNotification()->getType() === Notification::NOTIFICATION_ASYNC) {
+        if ($event->hasReply() || !$message->getFlagBag()->hasAny()) {
             return;
         }
 
-        if (!$message->isEmpty()) {
-            $this->database->addMessage($message);
+        if ($message->getFlagBag()->has(FlagBag::FLAG_ASYNC_SAVE)) {
+            $this->database->saveMessage($message);
 
             return;
         }
 
-        $reply = $this->database->popReply($message);
-        if (null !== $reply) {
-            $event->setReply($reply);
+        if ($message->getFlagBag()->has(FlagBag::FLAG_ASYNC_GET)) {
+            $reply = $this->database->popReply($message);
+            if (null !== $reply) {
+                $event->setReply($reply);
+            }
         }
     }
 }

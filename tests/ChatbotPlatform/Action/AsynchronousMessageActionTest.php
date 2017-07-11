@@ -7,7 +7,7 @@ use dLdL\ChatbotPlatform\ChatbotMessengers;
 use dLdL\ChatbotPlatform\Event\MessageEvent;
 use dLdL\ChatbotPlatform\Helper\DatabaseHelper;
 use dLdL\ChatbotPlatform\Message\Message;
-use dLdL\ChatbotPlatform\Message\Notification;
+use dLdL\ChatbotPlatform\Message\FlagBag;
 use PHPUnit\Framework\TestCase;
 
 class AsynchronousMessageActionTest extends TestCase
@@ -22,11 +22,11 @@ class AsynchronousMessageActionTest extends TestCase
         $this->database->getPDO()->exec('TRUNCATE TABLE message');
     }
 
-    public function testAdd()
+    public function testAdd(): AsynchronousMessageAction
     {
         $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel', 'Albert');
         $message->setContent('Hello!');
-        $message->setNotification(new Notification(Notification::NOTIFICATION_ASYNC));
+        $message->getFlagBag()->add(FlagBag::FLAG_ASYNC_SAVE);
         $event = new MessageEvent($message);
 
         $action = new AsynchronousMessageAction($this->database);
@@ -40,10 +40,10 @@ class AsynchronousMessageActionTest extends TestCase
     /**
      * @depends testAdd
      */
-    public function testRemove(AsynchronousMessageAction $action)
+    public function testRemove(AsynchronousMessageAction $action): AsynchronousMessageAction
     {
         $message = new Message(ChatbotMessengers::AJAX, '12345', 'Albert', 'Michel');
-        $message->setNotification(new Notification(Notification::NOTIFICATION_ASYNC));
+        $message->getFlagBag()->add(FlagBag::FLAG_ASYNC_GET);
         $event = new MessageEvent($message);
 
         $action->onMessage($event);
@@ -53,5 +53,21 @@ class AsynchronousMessageActionTest extends TestCase
         $this->assertEquals('Michel', $reply->getSender());
         $this->assertEquals('Albert', $reply->getRecipient());
         $this->assertEquals('12345', $reply->getDiscussionId());
+
+        return $action;
+    }
+
+    /**
+     * @depends testRemove
+     */
+    public function testEmpty(AsynchronousMessageAction $action)
+    {
+
+        $message = new Message(ChatbotMessengers::AJAX, '12345', 'Albert', 'Michel');
+        $message->getFlagBag()->add(FlagBag::FLAG_ASYNC_GET);
+        $event = new MessageEvent($message);
+
+        $action->onMessage($event);
+        $this->assertFalse($event->hasReply());
     }
 }

@@ -14,7 +14,7 @@ class Message
     private $recipient;
 
     private $content;
-    private $notification;
+    private $flagBag;
 
     public function __construct(string $messenger, string $discussionId, string $sender, string $recipient)
     {
@@ -23,6 +23,7 @@ class Message
         $this->sender = $sender;
         $this->recipient = $recipient;
         $this->content = '';
+        $this->flagBag = new FlagBag();
     }
 
     public function getMessenger(): string
@@ -62,20 +63,8 @@ class Message
         return $this;
     }
 
-    public function hasNotification()
+    public function getFlagBag()
     {
-        return $this->notification !== null;
-    }
-
-    public function getNotification(): ?Notification
-    {
-        return $this->notification;
-    }
-
-    public function setNotification(Notification $notification): Message
-    {
-        $this->notification = $notification;
-
-        return $this;
+        return $this->flagBag;
     }
 }

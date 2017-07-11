@@ -4,28 +4,28 @@ namespace Tests\ChatbotPlatform\Message;
 
 use dLdL\ChatbotPlatform\ChatbotMessengers;
 use dLdL\ChatbotPlatform\Message\Message;
-use dLdL\ChatbotPlatform\Message\Notification;
+use dLdL\ChatbotPlatform\Message\FlagBag;
 use PHPUnit\Framework\TestCase;
 
 class MessageTest extends TestCase
 {
-    public function testVoidMessage()
+    public function testEmptyMessage()
     {
         $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel', 'Albert');
 
         $this->assertTrue($message->isEmpty());
         $this->assertSame('', $message->getContent());
-        $this->assertNull($message->getNotification());
+        $this->assertFalse($message->getFlagBag()->hasAny());
     }
 
-    public function testNotificationMessage()
+    public function testFlaggedMessage()
     {
         $message = new Message(ChatbotMessengers::AJAX, '12345', 'Michel', 'Albert');
-        $message->setNotification(new Notification(Notification::NOTIFICATION_READ));
+        $message->getFlagBag()->add(FlagBag::FLAG_READ);
 
         $this->assertTrue($message->isEmpty());
-        $this->assertTrue($message->hasNotification());
-        $this->assertEquals(Notification::NOTIFICATION_READ, $message->getNotification()->getType());
+        $this->assertTrue($message->getFlagBag()->hasAny());
+        $this->assertTrue($message->getFlagBag()->has(FlagBag::FLAG_READ));
     }
 
     public function testInteractionMessage()
@@ -34,7 +34,7 @@ class MessageTest extends TestCase
         $message->setContent('Hello!');
 
         $this->assertFalse($message->isEmpty());
-        $this->assertFalse($message->hasNotification());
+        $this->assertFalse($message->getFlagBag()->hasAny());
         $this->assertEquals('Michel', $message->getSender());
         $this->assertEquals('Albert', $message->getRecipient());
         $this->assertEquals('Hello!', $message->getContent());

@@ -7,7 +7,7 @@ use dLdL\ChatbotPlatform\Event\RequestEvent;
 use dLdL\ChatbotPlatform\Event\ReplyEvent;
 use dLdL\ChatbotPlatform\Exception\MessageParsingException;
 use dLdL\ChatbotPlatform\Message\Message;
-use dLdL\ChatbotPlatform\Message\Notification;
+use dLdL\ChatbotPlatform\Message\FlagBag;
 use dLdL\ChatbotPlatform\MessageHandlerInterface;
 use pimax\FbBotApp;
 use pimax\Messages\Message as FacebookMessage;
@@ -103,13 +103,13 @@ class FacebookMessageHandler implements MessageHandlerInterface
         );
 
         if (isset($rawMessage['message']['is_echo'])) {
-            $message->setNotification(new Notification(Notification::NOTIFICATION_ECHO));
+            $message->getFlagBag()->add(FlagBag::FLAG_ECHO);
 
             return $message;
         }
 
         if (isset($rawMessage['read'])) {
-            $message->setNotification(new Notification(Notification::NOTIFICATION_READ));
+            $message->getFlagBag()->add(FlagBag::FLAG_READ);
 
             return $message;
         }
