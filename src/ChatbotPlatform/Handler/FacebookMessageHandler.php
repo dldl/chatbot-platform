@@ -75,16 +75,17 @@ class FacebookMessageHandler implements MessageHandlerInterface
         return new Response($challenge);
     }
 
-    private function parseMessage(array $rawMessage): ?Message
+    private function parseMessage(array $content): ?Message
     {
-        if (!isset($rawMessage['entry']) || !isset($rawMessage['entry'][0]['messaging'])) {
+        if (!isset($content['entry']) || !isset($content['entry'][0]['messaging'])) {
             return null;
         }
 
-        if (empty($rawMessage['entry'][0]['messaging'])) {
+        if (empty($content['entry'][0]['messaging'])) {
             return null;
         }
 
+        $rawMessage = $content['entry'][0]['messaging'][0];
         $message = new Message(
           ChatbotMessengers::FACEBOOK,
           $rawMessage['sender']['id'],
