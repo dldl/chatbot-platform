@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AjaxMessageHandlerTest extends TestCase
 {
-    public function testSimpleValidRequest()
+    public function testSimpleRequest()
     {
         $request = $this->getRequestMock();
         $request
@@ -39,6 +39,30 @@ class AjaxMessageHandlerTest extends TestCase
         $this->assertEquals('Michel', $message->getSender());
         $this->assertEquals('Albert', $message->getRecipient());
         $this->assertEquals('Hello!', $message->getContent());
+    }
+
+    public function testFlaggedRequest()
+    {
+        $request = $this->getRequestMock();
+        $request
+          ->expects($this->once())
+          ->method('getContentType')
+          ->willReturn('json')
+        ;
+
+        $request
+          ->expects($this->once())
+          ->method('getContent')
+          ->willReturn($this->getValidFlaggedContent())
+        ;
+
+        $event = new RequestEvent($request);
+        $handler = new AjaxMessageHandler();
+
+        $handler->onRequest($event);
+
+        $this->assertTrue($event->hasMessage());
+        $this->assertEquals(json_decode($this->getValidFlaggedContent(), true)['flags'], $event->getMessage()->getFlags()->all());
     }
 
     public function testInvalidContentType()

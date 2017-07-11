@@ -43,8 +43,10 @@ class AjaxMessageHandler implements MessageHandlerInterface
           $rawMessage['recipient']
         );
 
-        if (isset($rawMessage['flag'])) {
-            $message->getFlags()->add(new Flag($rawMessage['flag']));
+        if (isset($rawMessage['flags']) && is_array($rawMessage['flags']) && !empty($rawMessage['flags'])) {
+            foreach ($rawMessage['flags'] as $flag) {
+                $message->getFlags()->add($flag);
+            }
         }
 
         $message->setContent($rawMessage['message']);
