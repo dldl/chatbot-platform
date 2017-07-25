@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 class ChatbotPlatformTest extends TestCase
 {
     /**
-     * This test checks if the main mechanisms if the platform are working:
+     * This test checks if the platform main mechanisms are working:
      *   - receiving a message containing "Hello",
      *   - appending " to the" and " world!" through two prioritized actions,
      *   - responding the generated reply.
