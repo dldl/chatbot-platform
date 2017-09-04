@@ -69,7 +69,9 @@ For `Ajax` support, you must send *POST* requests to your server with the follow
 }
 ```
 
-Reply will be returned immediately. Asynchronous replies are not (yet) supported.
+Reply will be returned immediately. Asynchronous replies are also supported using tags. Enable the `AsynchronousMessageAction` and add
+to your body a `tags: ['ASYNC_GET']` or `tags: ['ASYNC_SAVE']` to get or save a message. Messages are removed from the SQLite database
+when read. This can be used with your own actions to append the required tag to the message when needed.
 
 ## Provided features
 
